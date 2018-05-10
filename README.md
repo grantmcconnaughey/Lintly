@@ -40,7 +40,7 @@ Lintly works out of the box with Travis and Circle CI. When using these Continuo
 
 To use with Lintly with Travis CI, add the following to your `.travis.yml` config file:
 
-```
+```yml
 language: python
 
 jobs:
@@ -55,9 +55,9 @@ stages:
 
 ## To-Do
 
-- Exit 1 if errors
 - Post statuses
-- Fail on any issue or diff issues
+- Config: Fail on any issue or diff issues
+- Delete existing PR Review
 - Use Jinja for comment templating
 - Support for eslint
 - Support for stylelint

@@ -53,6 +53,9 @@ def main(**options):
     # Post a PR to GitHub
     post_pr_comment(config, all_violations)
 
+    # Exit with the number of files that have violations
+    sys.exit(len(all_violations))
+
 
 def post_pr_comment(config, violations):
     """
