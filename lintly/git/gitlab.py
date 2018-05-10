@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import functools
 import json
 import logging
@@ -10,7 +12,7 @@ from .base import BaseGitBackend
 from .errors import (
     NotSupportedError, NotFoundError, GitClientError, UnauthorizedError
 )
-from .objects import PullRequest, Commit, Repository, Owner
+from .objects import PullRequest, Repository, Owner
 
 
 logger = logging.getLogger(__name__)
