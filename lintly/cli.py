@@ -67,15 +67,12 @@ def post_pr_comment(config, violations):
     # does not have permission to review the PR then simply revert to posting a regular PR
     # comment.
     try:
-        # TODO: Allow configuration to post PR comment or review
-        if False:
-            logger.info('Deleting old PR review comments')
-            git_client.delete_pull_request_review_comments(
-                config.pr, bot=self.bot.username)
+        # logger.info('Deleting old PR review comments')
+        # git_client.delete_pull_request_review_comments(config.pr, bot=self.bot.username)
 
-            logger.info('Creating PR review')
-            git_client.create_pull_request_review(config.pr)
-            post_pr_comment = False
+        logger.info('Creating PR review')
+        git_client.create_pull_request_review(config.pr, violations)
+        post_pr_comment = False
     except GitClientError as e:
         # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
         # so that we don't have to check for a specific message in the exception
