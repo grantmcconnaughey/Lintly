@@ -50,7 +50,7 @@ class GitLabAPIClient:
     as JSON or a string (depending on the Content-Type header).
     """
 
-    base_url = f'{GITLAB_URL}/api/v{GITLAB_API_VERSION}'
+    base_url = '{url}/api/v{version}'.format(url=GITLAB_URL, version=GITLAB_API_VERSION)
 
     def __init__(self, token=None, user=None, project=None):
         self.user = user
