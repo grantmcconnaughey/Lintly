@@ -195,7 +195,7 @@ class GitHubBackend(BaseGitBackend):
                     comments.append({
                         'path': file_path,
                         'position': patch_position,
-                        'body': '{}: {}'.format(violation.code, violation.message)
+                        'body': ':frowning: {}: {}'.format(violation.code, violation.message)
                     })
 
         client = GitHubAPIClient(token=self.token)
@@ -213,11 +213,13 @@ class GitHubBackend(BaseGitBackend):
         client.post(url, data, headers={'Accept': GITHUB_API_PR_REVIEW_HEADER})
 
     @translate_github_exception
-    def delete_pull_request_review_comments(self, pr, bot):
+    def delete_pull_request_review_comments(self, pr):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_pull(int(pr))
         for comment in pull_request.get_review_comments():
-            if comment.user.login == bot:
+            # TODO: Come up with some identifier than indicates the PR review
+            # comment came from Lintly and therefore can be deleted
+            if ':frowning:' in comment.body:
                 comment.delete()
 
     def post_status(self, state, description, sha, target_url=''):

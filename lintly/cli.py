@@ -70,8 +70,8 @@ def post_pr_comment(config, violations):
     # does not have permission to review the PR then simply revert to posting a regular PR
     # comment.
     try:
-        # logger.info('Deleting old PR review comments')
-        # git_client.delete_pull_request_review_comments(config.pr, bot=self.bot.username)
+        logger.info('Deleting old PR review comments')
+        git_client.delete_pull_request_review_comments(config.pr)
 
         logger.info('Creating PR review')
         git_client.create_pull_request_review(config.pr, violations)
