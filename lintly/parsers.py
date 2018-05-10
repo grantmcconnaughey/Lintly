@@ -1,4 +1,5 @@
 import collections
+import os
 import re
 
 from .violations import Violation
@@ -35,7 +36,7 @@ def parse_violations(output, regex):
         if not match:
             continue
 
-        path = match.group('path')
+        path = os.path.normpath(match.group('path'))
 
         violation = Violation(
             line=int(match.group('line')),
