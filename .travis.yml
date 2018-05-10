@@ -7,9 +7,8 @@ python:
 install:
   - pip install -e .
   - pip install -r requirements.txt
-before_script:
-  - flake8 | lintly
 script:
+  - flake8 | lintly
   - coverage run -m pytest
 after_success:
   - codecov

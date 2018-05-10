@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import click
 
@@ -40,6 +41,10 @@ def main(**options):
 
     ci = find_ci_provider()
     config = Config(options, ci=ci)
+
+    if not config.pr:
+        logger.info('Not a PR. Lintly is exiting.')
+        sys.exit(0)
 
     # Parse violations from stdin
     parser_regex = PARSER_FORMATS.get(config.format)
