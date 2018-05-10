@@ -63,24 +63,26 @@ def post_pr_comment(config, violations):
 
     post_pr_comment = True
 
-    # Attempt to post a PR review. If posting the PR review fails because the bot account
-    # does not have permission to review the PR then simply revert to posting a regular PR
-    # comment.
-    try:
-        # logger.info('Deleting old PR review comments')
-        # git_client.delete_pull_request_review_comments(config.pr, bot=self.bot.username)
+    if False:
 
-        logger.info('Creating PR review')
-        git_client.create_pull_request_review(config.pr, violations)
-        post_pr_comment = False
-    except GitClientError as e:
-        # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
-        # so that we don't have to check for a specific message in the exception
-        if 'Viewer does not have permission to review this pull request' in str(e):
-            logger.info("Could not post PR review (the bot account didn't have permission)")
-            pass
-        else:
-            raise
+        # Attempt to post a PR review. If posting the PR review fails because the bot account
+        # does not have permission to review the PR then simply revert to posting a regular PR
+        # comment.
+        try:
+            # logger.info('Deleting old PR review comments')
+            # git_client.delete_pull_request_review_comments(config.pr, bot=self.bot.username)
+
+            logger.info('Creating PR review')
+            git_client.create_pull_request_review(config.pr, violations)
+            post_pr_comment = False
+        except GitClientError as e:
+            # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
+            # so that we don't have to check for a specific message in the exception
+            if 'Viewer does not have permission to review this pull request' in str(e):
+                logger.info("Could not post PR review (the bot account didn't have permission)")
+                pass
+            else:
+                raise
 
     if post_pr_comment:
         # logger.info('Deleting old PR comment')
