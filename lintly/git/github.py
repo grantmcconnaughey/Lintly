@@ -177,7 +177,7 @@ class GitHubBackend(BaseGitBackend):
 
         diff = client.get(diff_url, headers={'Accept': GITHUB_DIFF_HEADER})
 
-        return diff
+        return diff.decode('utf-8')
 
     def create_pull_request_review(self, pr, all_violations):
         diff = self._get_pr_diff(pr)
