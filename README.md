@@ -1,5 +1,7 @@
 # Lintly
 
+[![Build Status](https://travis-ci.org/grantmcconnaughey/Lintly.svg?branch=master)](https://travis-ci.org/grantmcconnaughey/Lintly)
+
 Slurp up linter output and send it to a GitHub PR review.
 
 # Installation
