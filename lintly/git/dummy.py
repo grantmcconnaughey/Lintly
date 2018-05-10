@@ -1,5 +1,5 @@
 from .base import BaseGitBackend
-from .objects import Repository, Commit, Owner
+from .objects import Repository, Commit
 
 
 class DummyGitBackend(BaseGitBackend):
