@@ -4,9 +4,9 @@ Slurp up linter output and send it to a GitHub PR review.
 from setuptools import find_packages, setup
 
 dependencies = [
-    'click',
-    'PyGithub',
-    'python-gitlab',
+    'click<7.0',
+    'PyGithub<2.0',
+    'python-gitlab<2.0',
     'six',
 ]
 
