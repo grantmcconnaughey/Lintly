@@ -8,4 +8,6 @@ install:
   - pip install -e .
   - pip install -r requirements.txt
 script:
-  - pytest
+  - coverage run -m pytest
+after_script:
+  - codecov
