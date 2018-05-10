@@ -98,7 +98,7 @@ class GitHubBackend(BaseGitBackend):
     supports_pr_reviews = True
 
     def __init__(self, token, project):
-        super().__init__(token, project)
+        super(GitHubBackend, self).__init__(token, project)
         self.client = get_github_client(token)
 
     def _github_repo_to_repository(self, gh_repo):

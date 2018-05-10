@@ -38,6 +38,7 @@ Lintly works out of the box with Travis and Circle CI. When using these Continuo
 
 ## To-Do
 
+- Exit 1 if errors
 - Use Jinja for comment templating
 - Support for eslint
 - Support for stylelint
