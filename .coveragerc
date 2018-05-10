@@ -18,5 +18,8 @@ exclude_lines =
 show_missing = True
 precision = 2
 
+omit =
+    tests/*
+
 [html]
 directory = htmlcov/
