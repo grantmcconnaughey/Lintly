@@ -5,7 +5,7 @@ import os
 logger = logging.getLogger(__name__)
 
 
-class Travis:
+class Travis(object):
 
     @property
     def pr(self):
@@ -20,7 +20,7 @@ class Travis:
         return os.environ['TRAVIS_COMMIT']
 
 
-class CircleCI:
+class CircleCI(object):
 
     @property
     def pr(self):

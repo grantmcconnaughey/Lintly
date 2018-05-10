@@ -1,5 +1,5 @@
 
-class Repository:
+class Repository(object):
 
     def __init__(self, name, full_name, clone_url, default_branch, private, service='github', description='',
                  external_url='', homepage='', admin=False, owner=None):
@@ -16,7 +16,7 @@ class Repository:
         self.admin = admin
 
 
-class Commit:
+class Commit(object):
 
     def __init__(self, sha, message, external_url, author_name='', author_email='',
                  author_avatar_url='', committer_name='', committer_email='',
@@ -32,7 +32,7 @@ class Commit:
         self.committer_avatar_url = committer_avatar_url
 
 
-class Owner:
+class Owner(object):
 
     def __init__(self, login, name=None, email=None, type_='User'):
         self.login = login
@@ -41,7 +41,7 @@ class Owner:
         self.type = type_
 
 
-class PullRequest:
+class PullRequest(object):
 
     def __init__(self, number, url, head_ref, head_sha, base_ref, base_sha):
         self.number = number

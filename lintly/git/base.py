@@ -1,5 +1,5 @@
 
-class BaseGitBackend:
+class BaseGitBackend(object):
     """
     A base class for making calls to external Git APIs.
     """

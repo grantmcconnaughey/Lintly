@@ -10,7 +10,7 @@ NOT_REMOVED_OR_NEWLINE_WARNING = re.compile(r'^[^-\\]')
 logger = logging.getLogger(__name__)
 
 
-class Patch:
+class Patch(object):
     """
     Parses the body of a diff and returns the lines that changed as well as their "position",
     as outlined by GitHub here: https://developer.github.com/v3/pulls/comments/#create-a-comment
