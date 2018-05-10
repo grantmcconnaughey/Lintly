@@ -36,9 +36,28 @@ These configuration values can be provided to Lintly via environment variables o
 
 Lintly works out of the box with Travis and Circle CI. When using these Continuous Integration services the repository, pull request number, and commit SHA will be provided automatically.
 
+## Travis CI
+
+To use with Lintly with Travis CI, add the following to your `.travis.yml` config file:
+
+```
+language: python
+
+jobs:
+  include:
+    - stage: lint
+      install: pip install lintly
+      script: flake8 | lintly
+
+stages:
+  - lint
+```
+
 ## To-Do
 
 - Exit 1 if errors
+- Post statuses
+- Fail on any issue or diff issues
 - Use Jinja for comment templating
 - Support for eslint
 - Support for stylelint
