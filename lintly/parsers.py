@@ -16,7 +16,8 @@ class BaseLintParser(object):
 
 class LineRegexParser(BaseLintParser):
     """
-    A parser that runs a regular expression on each line of the output to return violations. The regex should match the following capture groups:
+    A parser that runs a regular expression on each line of the output to return violations.
+    The regex should match the following capture groups:
 
         - path
         - line

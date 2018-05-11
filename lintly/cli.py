@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
               help='The GitHub repo name in the format {owner}/{repo}')
 @click.option('--format',
               envvar='LINTLY_FORMAT',
-              type=click.Choice(list(PARSER_FORMATS.keys())),
+              type=click.Choice(list(PARSERS.keys())),
               default='unix',
               help='The linting output format Lintly should expect to receive')
 @click.option('--site-url',
