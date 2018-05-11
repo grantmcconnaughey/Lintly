@@ -8,7 +8,7 @@ from .config import Config
 from .git.github import GitHubBackend
 from .git.errors import GitClientError
 from .formatters import build_pr_comment
-from .parsers import PARSER_FORMATS, parse_violations
+from .parsers import PARSERS
 from .projects import Project
 
 
@@ -46,9 +46,8 @@ def main(**options):
         logger.info('Not a PR. Lintly is exiting.')
         sys.exit(0)
 
-    # Parse violations from stdin
-    parser_regex = PARSER_FORMATS.get(config.format)
-    all_violations = parse_violations(stdin_text, regex=parser_regex)
+    parser = PARSERS.get(config.format)
+    all_violations = parser.parse_violations(stdin_text)
 
     # Post a PR to GitHub
     post_pr_comment(config, all_violations)
