@@ -1,6 +1,17 @@
 """
 Formats text that will be posted to Pull Requests.
 """
+import os
+
+from jinja2 import Environment, FileSystemLoader
+
+
+TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), 'templates')
+
+
+env = Environment(
+    loader=FileSystemLoader(TEMPLATES_PATH),
+)
 
 
 def build_pr_comment(config, violations):
@@ -8,20 +19,5 @@ def build_pr_comment(config, violations):
     Creates a Markdown representation of the comment to be posted to a pull request.
     :return: The comment
     """
-
-    comment_lines = ['### Lintly',
-                     'The following code quality issues were introduced:']
-
-    for file_path in sorted(violations):
-        file_violations = violations[file_path]
-        comment_lines.append('\n#### `{}`'.format(file_path))
-        for violation in file_violations:
-            comment_lines.append('* **{}**: {} (line {}, column {})'.format(
-                violation.code,
-                violation.message,
-                violation.line,
-                violation.column,
-            ))
-
-    comment = '\n'.join(comment_lines)
-    return comment
+    template = env.get_template('pr_comment.txt')
+    return template.render(violations=violations)
