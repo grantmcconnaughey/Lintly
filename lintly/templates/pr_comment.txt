@@ -2,7 +2,7 @@
 
 The following code quality issues were introduced:
 
-{% for file_path, file_violations in violations.items %}
+{% for file_path, file_violations in violations.items() %}
 
     #### {{ file_path }}
 
