@@ -14,11 +14,22 @@ Next, simply pipe the output of your linter to Lintly:
 
     $ flake8 | lintly
 
+## Support Git Services
+
+- GitHub
+
+> Support for GitLab and Bitbucket is planned.
+
 ## Supported Linters
 
-- flake8
-- eslint
-- stylelint
+- [flake8](http://flake8.pycqa.org/en/latest/)
+    ```
+    $ flake8 | lintly
+    ```
+- [eslint](https://eslint.org/)
+    ```
+    $ eslint --format=unix | lintly --format=eslint-unix
+    ```
 
 ## Configuration
 
@@ -57,7 +68,5 @@ stages:
 
 - Post statuses
 - Config: Fail on any issue or diff issues
-- Delete existing PR Review
 - Use Jinja for comment templating
-- Support for eslint
-- Support for stylelint
+- Support for [stylelint](https://stylelint.io/)

@@ -12,6 +12,11 @@ from .violations import Violation
 # - message
 PARSER_FORMATS = {
     'unix': r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$',
+    # lintly/static/js/scripts.js:69:1: 'lintly' is not defined. [Error/no-undef]
+    # path:line:column: message [CODE]
+    'eslint-unix': r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): '
+                   r'(?P<message>.+) \[(Warning|Error)/(?P<code>.+)\]$',
+
 }
 
 
