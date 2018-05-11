@@ -7,7 +7,7 @@ The following code quality issues were introduced:
 #### {{ file_path }}
 
 {% for violation in file_violations %}
-* **{{ violation.code }}**: {{ violation.message }} (line: {{ violation.line }}), column: {{ violation.column }})
+* **{{ violation.code }}**: {{ violation.message }} (line: {{ violation.line }}, column: {{ violation.column }})
 {% endfor %}
 
 {% endfor %}

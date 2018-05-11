@@ -7,7 +7,9 @@ import requests
 
 from github import GithubException, UnknownObjectException, Github
 
-from ..patch import Patch
+from lintly.formatters import build_pr_review_line_comment
+from lintly.patch import Patch
+
 from .base import BaseGitBackend
 from .errors import NotFoundError, GitClientError
 from .objects import Repository, Owner, PullRequest
@@ -195,7 +197,7 @@ class GitHubBackend(BaseGitBackend):
                     comments.append({
                         'path': file_path,
                         'position': patch_position,
-                        'body': ':frowning: {}: {}'.format(violation.code, violation.message)
+                        'body': build_pr_review_line_comment(violation)
                     })
 
         client = GitHubAPIClient(token=self.token)

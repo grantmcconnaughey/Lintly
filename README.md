@@ -68,5 +68,4 @@ stages:
 
 - Post statuses
 - Config: Fail on any issue or diff issues
-- Use Jinja for comment templating
 - Support for [stylelint](https://stylelint.io/)

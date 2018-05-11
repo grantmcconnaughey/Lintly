@@ -22,3 +22,12 @@ def build_pr_comment(config, violations):
     """
     template = env.get_template('pr_comment.txt')
     return template.render(violations=violations)
+
+
+def build_pr_review_line_comment(violation):
+    """
+    Creates a Markdown representation of the comment to be posted to a pull request.
+    :return: The comment
+    """
+    template = env.get_template('pr_review_line_comment.txt')
+    return template.render(violation=violation)
