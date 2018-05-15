@@ -50,6 +50,21 @@ class AppVeyor(object):
         return os.environ['APPVEYOR_REPO_COMMIT']
 
 
+class Shippable(object):
+
+    @property
+    def pr(self):
+        return os.environ['PULL_REQUEST']
+
+    @property
+    def repo(self):
+        return os.environ['SHIPPABLE_REPO_SLUG']
+
+    @property
+    def commit_sha(self):
+        return os.environ['COMMIT']
+
+
 def find_ci_provider():
     if 'TRAVIS' in os.environ:
         logger.info('Travis CI detected')
@@ -60,6 +75,9 @@ def find_ci_provider():
     elif 'APPVEYOR' in os.environ:
         logger.info('AppVeyor detected')
         return AppVeyor()
+    elif 'SHIPPABLE' in os.environ:
+        logger.info('Shippable detected')
+        return Shippable()
     else:
         logger.info('No CI detected')
         return None

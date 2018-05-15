@@ -56,6 +56,7 @@ Lintly works out of the box with the following Continuous Integration platforms:
 - [Travis CI](#travis-ci)
 - Circle CI
 - AppVeyor
+- Shippable
 
 When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be provided automatically.
 
