@@ -3,7 +3,7 @@ language: python
 jobs:
   include:
     - stage: lint
-      script: flake8 | lintly
+      script: flake8 | lintly --log
       install:
         - pip install -e .
         - pip install -r requirements.txt

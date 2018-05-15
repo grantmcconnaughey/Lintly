@@ -39,30 +39,35 @@ logger = logging.getLogger(__name__)
 @click.option('--post-status/--no-post-status',
               default=True,
               help='Used to determine if Lintly should post a PR status to GitHub.')
+@click.option('--log',
+              default=False,
+              help='Send Lintly debug logs to the console.')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
-    logging.config.dictConfig({
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'standard': {
-                'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+    if options.get('log'):
+        logging.config.dictConfig({
+            'version': 1,
+            'disable_existing_loggers': False,
+            'formatters': {
+                'standard': {
+                    'format': 'Lintly: %(asctime)s [%(levelname)s] %(name)s: %(message)s'
+                },
             },
-        },
-        'handlers': {
-            'default': {
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
+            'handlers': {
+                'default': {
+                    'level': 'INFO',
+                    'class': 'logging.StreamHandler',
+                    'formatter': 'standard'
+                },
             },
-        },
-        'loggers': {
-            'lintly': {
-                'handlers': ['default'],
-                'level': 'INFO',
-                'propagate': True
+            'loggers': {
+                'lintly': {
+                    'handlers': ['default'],
+                    'level': 'INFO',
+                    'propagate': True
+                }
             }
-        }
-    })
+        })
 
     stdin_stream = click.get_text_stream('stdin')
     stdin_text = stdin_stream.read()
