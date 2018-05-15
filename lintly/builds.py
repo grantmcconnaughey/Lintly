@@ -80,9 +80,9 @@ class LintlyBuild(object):
         Posts results to a commit status in GitHub if this build is for a pull request.
         """
         if self.all_violations:
-            issue_word = 'issue' if self.introduced_issues_count == 1 else 'issues'
-            description = 'Pull Request introduced {} quality {}'.format(
-                self.introduced_issues_count, issue_word)
+            plural = '' if self.introduced_issues_count == 1 else 's'
+            description = 'Pull Request introduced {} linting violation{}'.format(
+                self.introduced_issues_count, plural)
             self._post_status('failure', description)
         else:
             self._post_status('success', 'Linting introduced no new issues.')
