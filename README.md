@@ -66,6 +66,6 @@ stages:
 
 ## To-Do
 
-- Post statuses
 - Config: Fail on any issue or diff issues
 - Support for [stylelint](https://stylelint.io/)
+- Maybe port [this library](https://github.com/pvdlg/env-ci) to Python to support additional CI providers

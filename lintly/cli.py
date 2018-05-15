@@ -3,13 +3,11 @@ import sys
 
 import click
 
+from .builds import LintlyBuild
 from .ci import find_ci_provider
 from .config import Config
-from .git.github import GitHubBackend
-from .git.errors import GitClientError
-from .formatters import build_pr_comment
+from .exceptions import NotPullRequestException
 from .parsers import PARSERS
-from .projects import Project
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +32,12 @@ logger = logging.getLogger(__name__)
               envvar='LINTLY_SITE_URL',
               default='github.com',
               help='The GitHub URL to use. Defaults to github.com. Override this if you use GitHub Enterprise.')
+@click.option('--commit-sha',
+              envvar='LINTLY_COMMIT_SHA',
+              help='The commit Lintly is running against.')
+@click.option('--post-status/--no-post-status',
+              default=True,
+              help='Used to determine if Lintly should post a PR status to GitHub.')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
     stdin_stream = click.get_text_stream('stdin')
@@ -42,52 +46,12 @@ def main(**options):
     ci = find_ci_provider()
     config = Config(options, ci=ci)
 
-    if not config.pr:
+    build = LintlyBuild(config, stdin_text)
+    try:
+        build.execute()
+    except NotPullRequestException:
         logger.info('Not a PR. Lintly is exiting.')
         sys.exit(0)
 
-    parser = PARSERS.get(config.format)
-    all_violations = parser.parse_violations(stdin_text)
-
-    # Post a PR to GitHub
-    post_pr_comment(config, all_violations)
-
     # Exit with the number of files that have violations
-    sys.exit(len(all_violations))
-
-
-def post_pr_comment(config, violations):
-    """
-    Posts a comment to the GitHub PR if the diff results have issues.
-    """
-    project = Project(config.repo)
-    git_client = GitHubBackend(token=config.api_key, project=project)
-
-    post_pr_comment = True
-
-    # Attempt to post a PR review. If posting the PR review fails because the bot account
-    # does not have permission to review the PR then simply revert to posting a regular PR
-    # comment.
-    try:
-        logger.info('Deleting old PR review comments')
-        git_client.delete_pull_request_review_comments(config.pr)
-
-        logger.info('Creating PR review')
-        git_client.create_pull_request_review(config.pr, violations)
-        post_pr_comment = False
-    except GitClientError as e:
-        # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
-        # so that we don't have to check for a specific message in the exception
-        if 'Viewer does not have permission to review this pull request' in str(e):
-            logger.info("Could not post PR review (the bot account didn't have permission)")
-            pass
-        else:
-            raise
-
-    if post_pr_comment:
-        # logger.info('Deleting old PR comment')
-        # git_client.delete_pull_request_comments(config.pr, bot=self.bot.username)
-
-        logger.info('Creating PR comment for')
-        comment = build_pr_comment(config, violations)
-        git_client.create_pull_request_comment(config.pr, comment)
+    sys.exit(len(build.all_violations))

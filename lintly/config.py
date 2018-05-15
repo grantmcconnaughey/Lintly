@@ -17,6 +17,10 @@ class Config(object):
         return self.cli_config['repo'] or getattr(self.ci, 'repo')
 
     @property
+    def commit_sha(self):
+        return self.cli_config['commit_sha'] or getattr(self.ci, 'commit_sha')
+
+    @property
     def api_key(self):
         return self.cli_config['api_key']
 
@@ -27,3 +31,7 @@ class Config(object):
     @property
     def site_url(self):
         return self.cli_config['site_url']
+
+    @property
+    def post_status(self):
+        return self.cli_config['post_status']
