@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
               default=True,
               help='Used to determine if Lintly should post a PR status to GitHub.')
 @click.option('--log',
-              default=False,
+              is_flag=True,
               help='Send Lintly debug logs to the console.')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
