@@ -17,7 +17,7 @@ class Travis(object):
 
     @property
     def commit_sha(self):
-        return os.environ['TRAVIS_COMMIT']
+        return os.environ['TRAVIS_PULL_REQUEST_SHA']
 
 
 class CircleCI(object):
