@@ -5,6 +5,7 @@ import os
 logger = logging.getLogger(__name__)
 
 
+# https://docs.travis-ci.com/user/environment-variables
 class Travis(object):
 
     @property
@@ -20,6 +21,7 @@ class Travis(object):
         return os.environ['TRAVIS_PULL_REQUEST_SHA']
 
 
+# https://circleci.com/docs/1.0/environment-variables
 class CircleCI(object):
 
     @property
@@ -35,6 +37,7 @@ class CircleCI(object):
         return os.environ['CIRCLE_SHA1']
 
 
+# https://www.appveyor.com/docs/environment-variables
 class AppVeyor(object):
 
     @property
@@ -50,6 +53,7 @@ class AppVeyor(object):
         return os.environ['APPVEYOR_REPO_COMMIT']
 
 
+# http://docs.shippable.com/ci/env-vars/#stdEnv
 class Shippable(object):
 
     @property
@@ -65,6 +69,22 @@ class Shippable(object):
         return os.environ['COMMIT']
 
 
+# https://semaphoreci.com/docs/available-environment-variables.html
+class Semaphore(object):
+
+    @property
+    def pr(self):
+        return os.environ['PULL_REQUEST_NUMBER']
+
+    @property
+    def repo(self):
+        return os.environ['SEMAPHORE_REPO_SLUG']
+
+    @property
+    def commit_sha(self):
+        return os.environ['REVISION']
+
+
 def find_ci_provider():
     if 'TRAVIS' in os.environ:
         logger.info('Travis CI detected')
@@ -78,6 +98,9 @@ def find_ci_provider():
     elif 'SHIPPABLE' in os.environ:
         logger.info('Shippable detected')
         return Shippable()
+    elif 'SEMAPHORE' in os.environ:
+        logger.info('Semaphore detected')
+        return Semaphore()
     else:
         logger.info('No CI detected')
         return None
