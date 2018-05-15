@@ -96,11 +96,13 @@ class LintlyBuild(object):
         if self.config.post_status:
             logger.info('Commit statuses enabled')
             try:
+                logger.info('Posting status to commit SHA {}'.format(self.config.commit_sha))
                 self.git_client.post_status(
                     state,
                     description,
                     sha=self.config.commit_sha
                 )
+                logger.info('Posted commit status')
             except NotFoundError:
                 # Silently fail if commit statuses can't be created
                 logger.warning('Could not create status because project could not be found')
