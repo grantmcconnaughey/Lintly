@@ -54,10 +54,9 @@ class GitLabAPIClient:
 
     base_url = '{url}/api/v{version}'.format(url=GITLAB_URL, version=GITLAB_API_VERSION)
 
-    def __init__(self, token=None, user=None, project=None):
-        self.user = user
+    def __init__(self, token=None, project=None):
         self.project = project
-        self.token = choose_gitlab_token(token=token, user=user, project=project)
+        self.token = token
 
     def __repr__(self):
         token = 'REDACTED' if self.token else 'None'
@@ -106,7 +105,7 @@ class GitLabBackend(BaseGitBackend):
     supports_pr_reviews = False
 
     def __init__(self, project=None, user=None, token=None):
-        super().__init__(project, user, token)
+        super(GitLabBackend, self).__init__(project, user, token)
         self.client = get_gitlab_client(self.project, self.user, token=token)
 
     def _gitlab_owner_to_owner(self, gl_owner):

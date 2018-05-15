@@ -1,14 +1,14 @@
 import logging
+import logging.config
+import sys
 
 import click
 
+from .builds import LintlyBuild
 from .ci import find_ci_provider
 from .config import Config
-from .git.github import GitHubBackend
-from .git.errors import GitClientError
-from .formatters import build_pr_comment
-from .parsers import PARSER_FORMATS, parse_violations
-from .projects import Project
+from .exceptions import NotPullRequestException
+from .parsers import PARSERS
 
 
 logger = logging.getLogger(__name__)
@@ -26,64 +26,61 @@ logger = logging.getLogger(__name__)
               help='The GitHub repo name in the format {owner}/{repo}')
 @click.option('--format',
               envvar='LINTLY_FORMAT',
-              type=click.Choice(list(PARSER_FORMATS.keys())),
+              type=click.Choice(list(PARSERS.keys())),
               default='unix',
               help='The linting output format Lintly should expect to receive')
 @click.option('--site-url',
               envvar='LINTLY_SITE_URL',
               default='github.com',
               help='The GitHub URL to use. Defaults to github.com. Override this if you use GitHub Enterprise.')
+@click.option('--commit-sha',
+              envvar='LINTLY_COMMIT_SHA',
+              help='The commit Lintly is running against.')
+@click.option('--post-status/--no-post-status',
+              default=True,
+              help='Used to determine if Lintly should post a PR status to GitHub.')
+@click.option('--log',
+              is_flag=True,
+              help='Send Lintly debug logs to the console.')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
+    if options.get('log'):
+        logging.config.dictConfig({
+            'version': 1,
+            'disable_existing_loggers': False,
+            'formatters': {
+                'standard': {
+                    'format': 'Lintly: %(asctime)s [%(levelname)s] %(name)s: %(message)s'
+                },
+            },
+            'handlers': {
+                'default': {
+                    'level': 'INFO',
+                    'class': 'logging.StreamHandler',
+                    'formatter': 'standard'
+                },
+            },
+            'loggers': {
+                'lintly': {
+                    'handlers': ['default'],
+                    'level': 'INFO',
+                    'propagate': True
+                }
+            }
+        })
+
     stdin_stream = click.get_text_stream('stdin')
     stdin_text = stdin_stream.read()
 
     ci = find_ci_provider()
     config = Config(options, ci=ci)
 
-    # Parse violations from stdin
-    parser_regex = PARSER_FORMATS.get(config.format)
-    all_violations = parse_violations(stdin_text, regex=parser_regex)
-
-    # Post a PR to GitHub
-    post_pr_comment(config, all_violations)
-
-
-def post_pr_comment(config, violations):
-    """
-    Posts a comment to the GitHub PR if the diff results have issues.
-    """
-    project = Project(config.repo)
-    git_client = GitHubBackend(token=config.api_key, project=project)
-
-    post_pr_comment = True
-
-    # Attempt to post a PR review. If posting the PR review fails because the bot account
-    # does not have permission to review the PR then simply revert to posting a regular PR
-    # comment.
+    build = LintlyBuild(config, stdin_text)
     try:
-        # TODO: Allow configuration to post PR comment or review
-        if False:
-            logger.info('Deleting old PR review comments')
-            git_client.delete_pull_request_review_comments(
-                config.pr, bot=self.bot.username)
+        build.execute()
+    except NotPullRequestException:
+        logger.info('Not a PR. Lintly is exiting.')
+        sys.exit(0)
 
-            logger.info('Creating PR review')
-            git_client.create_pull_request_review(config.pr)
-            post_pr_comment = False
-    except GitClientError as e:
-        # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
-        # so that we don't have to check for a specific message in the exception
-        if 'Viewer does not have permission to review this pull request' in str(e):
-            logger.info("Could not post PR review (the bot account didn't have permission)")
-            pass
-        else:
-            raise
-
-    if post_pr_comment:
-        # logger.info('Deleting old PR comment')
-        # git_client.delete_pull_request_comments(config.pr, bot=self.bot.username)
-
-        logger.info('Creating PR comment for')
-        comment = build_pr_comment(config, violations)
-        git_client.create_pull_request_comment(config.pr, comment)
+    # Exit with the number of files that have violations
+    sys.exit(len(build.all_violations))

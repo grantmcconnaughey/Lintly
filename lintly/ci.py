@@ -5,7 +5,7 @@ import os
 logger = logging.getLogger(__name__)
 
 
-class Travis:
+class Travis(object):
 
     @property
     def pr(self):
@@ -17,10 +17,10 @@ class Travis:
 
     @property
     def commit_sha(self):
-        return os.environ['TRAVIS_COMMIT']
+        return os.environ['TRAVIS_PULL_REQUEST_SHA']
 
 
-class CircleCI:
+class CircleCI(object):
 
     @property
     def pr(self):

@@ -1,0 +1,13 @@
+### Lintly
+
+The following code quality issues were introduced:
+
+{% for file_path, file_violations in violations.items() %}
+
+#### {{ file_path }}
+
+{% for violation in file_violations %}
+* **{{ violation.code }}**: {{ violation.message }} (line: {{ violation.line }}, column: {{ violation.column }})
+{% endfor %}
+
+{% endfor %}

@@ -7,7 +7,9 @@ import requests
 
 from github import GithubException, UnknownObjectException, Github
 
-from ..patch import Patch
+from lintly.formatters import build_pr_review_line_comment
+from lintly.patch import Patch
+
 from .base import BaseGitBackend
 from .errors import NotFoundError, GitClientError
 from .objects import Repository, Owner, PullRequest
@@ -98,7 +100,7 @@ class GitHubBackend(BaseGitBackend):
     supports_pr_reviews = True
 
     def __init__(self, token, project):
-        super().__init__(token, project)
+        super(GitHubBackend, self).__init__(token, project)
         self.client = get_github_client(token)
 
     def _github_repo_to_repository(self, gh_repo):
@@ -177,25 +179,25 @@ class GitHubBackend(BaseGitBackend):
 
         diff = client.get(diff_url, headers={'Accept': GITHUB_DIFF_HEADER})
 
-        return diff
+        return diff.decode('utf-8')
 
-    def create_pull_request_review(self, pr):
+    def create_pull_request_review(self, pr, all_violations):
         diff = self._get_pr_diff(pr)
 
         patch = Patch(diff)
 
         comments = []
-        for file_path in build.diff_results:
-            results = build.diff_results[file_path]
+        for file_path in all_violations:
+            violations = all_violations[file_path]
 
             # https://developer.github.com/v3/pulls/comments/#input
-            for issue in results:
-                patch_position = patch.get_patch_position(file_path, issue['line'])
+            for violation in violations:
+                patch_position = patch.get_patch_position(file_path, violation.line)
                 if patch_position is not None:
                     comments.append({
                         'path': file_path,
                         'position': patch_position,
-                        'body': '{}: {}'.format(issue['code'], issue['message'])
+                        'body': build_pr_review_line_comment(violation)
                     })
 
         client = GitHubAPIClient(token=self.token)
@@ -206,18 +208,20 @@ class GitHubBackend(BaseGitBackend):
         }
 
         url = '/repos/{owner}/{repo_name}/pulls/{pr_number}/reviews'.format(
-            owner=build.project.owner_login,
-            repo_name=build.project.name,
-            pr_number=build.pull_request
+            owner=self.project.owner_login,
+            repo_name=self.project.name,
+            pr_number=pr
         )
         client.post(url, data, headers={'Accept': GITHUB_API_PR_REVIEW_HEADER})
 
     @translate_github_exception
-    def delete_pull_request_review_comments(self, pr, bot):
+    def delete_pull_request_review_comments(self, pr):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_pull(int(pr))
         for comment in pull_request.get_review_comments():
-            if comment.user.login == bot:
+            # TODO: Come up with some identifier than indicates the PR review
+            # comment came from Lintly and therefore can be deleted
+            if ':frowning:' in comment.body:
                 comment.delete()
 
     def post_status(self, state, description, sha, target_url=''):
