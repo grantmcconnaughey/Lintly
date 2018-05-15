@@ -40,6 +40,29 @@ logger = logging.getLogger(__name__)
               help='Used to determine if Lintly should post a PR status to GitHub.')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'standard': {
+                'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+            },
+        },
+        'handlers': {
+            'default': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'lintly': {
+                'handlers': ['default'],
+                'level': 'INFO',
+                'propagate': True
+            }
+        }
+    })
+
     stdin_stream = click.get_text_stream('stdin')
     stdin_text = stdin_stream.read()
 
