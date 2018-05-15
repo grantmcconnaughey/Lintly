@@ -35,13 +35,31 @@ class CircleCI(object):
         return os.environ['CIRCLE_SHA1']
 
 
+class AppVeyor(object):
+
+    @property
+    def pr(self):
+        return os.environ['APPVEYOR_PULL_REQUEST_NUMBER']
+
+    @property
+    def repo(self):
+        return os.environ['APPVEYOR_REPO_NAME']
+
+    @property
+    def commit_sha(self):
+        return os.environ['APPVEYOR_REPO_COMMIT']
+
+
 def find_ci_provider():
     if 'TRAVIS' in os.environ:
-        logger.info('Using Travis CI')
+        logger.info('Travis CI detected')
         return Travis()
     elif 'CIRCLECI' in os.environ:
-        logger.info('Using Circle CI')
+        logger.info('Circle CI detected')
         return CircleCI()
+    elif 'APPVEYOR' in os.environ:
+        logger.info('AppVeyor detected')
+        return AppVeyor()
     else:
         logger.info('No CI detected')
         return None

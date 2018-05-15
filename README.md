@@ -10,7 +10,11 @@ First, `pip` install lintly:
 
     $ pip install lintly
 
-Next, simply pipe the output of your linter to Lintly:
+Next, set the `LINTLY_API_KEY` environment variable to your GitHub API Key:
+
+    $ export LINTLY_API_KEY="12345"
+
+Finally, simply pipe the output of your linter to Lintly:
 
     $ flake8 | lintly
 
@@ -31,6 +35,8 @@ Next, simply pipe the output of your linter to Lintly:
     $ eslint --format=unix | lintly --format=eslint-unix
     ```
 
+Additional linters can be added by modifying the `lintly/parsers.py` module.
+
 ## Configuration
 
 At the minimum, Lintly needs to know the following information to determine how to post the correct GitHub PR Review:
@@ -43,9 +49,15 @@ At the minimum, Lintly needs to know the following information to determine how 
 
 These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI.
 
-## Using Lintly with Continuous Integration Tools
+## Using Lintly with Continuous Integration platforms
 
-Lintly works out of the box with Travis and Circle CI. When using these Continuous Integration services the repository, pull request number, and commit SHA will be provided automatically.
+Lintly works out of the box with the following Continuous Integration platforms:
+
+- [Travis CI](#travis-ci)
+- Circle CI
+- AppVeyor
+
+When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be provided automatically.
 
 ## Travis CI
 
