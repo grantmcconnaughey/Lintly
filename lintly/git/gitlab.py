@@ -202,4 +202,4 @@ def get_gitlab_client(token=None):
     Returns a GitLab client object for a given token, user, or project.
     :return: The GitLab client
     """
-    return Gitlab(GITLAB_URL, token, api_version=str(GITLAB_API_VERSION))
+    return gitlab.Gitlab(GITLAB_URL, token, api_version=str(GITLAB_API_VERSION))

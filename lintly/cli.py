@@ -45,29 +45,7 @@ logger = logging.getLogger(__name__)
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
     if options.get('log'):
-        logging.config.dictConfig({
-            'version': 1,
-            'disable_existing_loggers': False,
-            'formatters': {
-                'standard': {
-                    'format': 'Lintly: %(asctime)s [%(levelname)s] %(name)s: %(message)s'
-                },
-            },
-            'handlers': {
-                'default': {
-                    'level': 'INFO',
-                    'class': 'logging.StreamHandler',
-                    'formatter': 'standard'
-                },
-            },
-            'loggers': {
-                'lintly': {
-                    'handlers': ['default'],
-                    'level': 'INFO',
-                    'propagate': True
-                }
-            }
-        })
+        configure_logging()
 
     stdin_stream = click.get_text_stream('stdin')
     stdin_text = stdin_stream.read()
@@ -84,3 +62,29 @@ def main(**options):
 
     # Exit with the number of files that have violations
     sys.exit(len(build.all_violations))
+
+
+def configure_logging():
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'standard': {
+                'format': 'Lintly: %(asctime)s [%(levelname)s] %(name)s: %(message)s'
+            },
+        },
+        'handlers': {
+            'default': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'standard'
+            },
+        },
+        'loggers': {
+            'lintly': {
+                'handlers': ['default'],
+                'level': 'INFO',
+                'propagate': True
+            }
+        }
+    })
