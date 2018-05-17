@@ -84,5 +84,4 @@ stages:
 
 ## To-Do
 
-- Config: Fail on any issue or diff issues
 - Support for [stylelint](https://stylelint.io/)

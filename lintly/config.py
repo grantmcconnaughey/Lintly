@@ -33,5 +33,9 @@ class Config(object):
         return self.cli_config['site_url']
 
     @property
+    def fail_on(self):
+        return self.cli_config['fail_on']
+
+    @property
     def post_status(self):
         return self.cli_config['post_status']

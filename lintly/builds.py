@@ -1,6 +1,7 @@
 import collections
 import logging
 
+from .constants import FAIL_ON_ANY
 from .exceptions import NotPullRequestException
 from .git.github import GitHubBackend
 from .git.errors import GitClientError, NotFoundError
@@ -33,7 +34,7 @@ class LintlyBuild(object):
         """
         Returns either the diff violations or all violations depending on configuration.
         """
-        return self._diff_violations
+        return self._all_violations if self.config.fail_on == FAIL_ON_ANY else self._diff_violations
 
     @property
     def has_violations(self):
