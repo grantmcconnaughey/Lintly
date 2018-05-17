@@ -11,7 +11,7 @@ class Travis(object):
     @property
     def pr(self):
         pr = os.environ['TRAVIS_PULL_REQUEST']
-        if pr == 'false':
+        if pr ==  'false':
             return None
         else:
             return pr
