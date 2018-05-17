@@ -36,6 +36,10 @@ class LintlyBuild(object):
         return self._diff_violations
 
     @property
+    def has_violations(self):
+        return bool(self.violations)
+
+    @property
     def introduced_issues_count(self):
         if self.violations is None:
             return 0
@@ -50,7 +54,10 @@ class LintlyBuild(object):
 
         parser = PARSERS.get(self.config.format)
         self._all_violations = parser.parse_violations(self.linter_output)
+        logger.info('Lintly found violations in {} files'.format(len(self._all_violations)))
+
         self._diff_violations = self.find_diff_violations()
+        logger.info('Lintly found diff violations in {} files'.format(len(self._diff_violations)))
 
         self.post_pr_comment()
         self.post_commit_status()
@@ -80,34 +87,35 @@ class LintlyBuild(object):
         """
         Posts a comment to the GitHub PR if the diff results have issues.
         """
-        post_pr_comment = True
+        if self.has_violations:
+            post_pr_comment = True
 
-        # Attempt to post a PR review. If posting the PR review fails because the bot account
-        # does not have permission to review the PR then simply revert to posting a regular PR
-        # comment.
-        try:
-            logger.info('Deleting old PR review comments')
-            self.git_client.delete_pull_request_review_comments(self.config.pr)
+            # Attempt to post a PR review. If posting the PR review fails because the bot account
+            # does not have permission to review the PR then simply revert to posting a regular PR
+            # comment.
+            try:
+                logger.info('Deleting old PR review comments')
+                self.git_client.delete_pull_request_review_comments(self.config.pr)
 
-            logger.info('Creating PR review')
-            self.git_client.create_pull_request_review(self.config.pr, self._diff_violations)
-            post_pr_comment = False
-        except GitClientError as e:
-            # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
-            # so that we don't have to check for a specific message in the exception
-            if 'Viewer does not have permission to review this pull request' in str(e):
-                logger.info("Could not post PR review (the bot account didn't have permission)")
-                pass
-            else:
-                raise
+                logger.info('Creating PR review')
+                self.git_client.create_pull_request_review(self.config.pr, self._diff_violations)
+                post_pr_comment = False
+            except GitClientError as e:
+                # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
+                # so that we don't have to check for a specific message in the exception
+                if 'Viewer does not have permission to review this pull request' in str(e):
+                    logger.info("Could not post PR review (the bot account didn't have permission)")
+                    pass
+                else:
+                    raise
 
-        if post_pr_comment:
-            # logger.info('Deleting old PR comment')
-            # self.git_client.delete_pull_request_comments(self.config.pr, bot=self.bot.username)
+            if post_pr_comment:
+                # logger.info('Deleting old PR comment')
+                # self.git_client.delete_pull_request_comments(self.config.pr, bot=self.bot.username)
 
-            logger.info('Creating PR comment for')
-            comment = build_pr_comment(self.config, self.violations)
-            self.git_client.create_pull_request_comment(self.config.pr, comment)
+                logger.info('Creating PR comment for')
+                comment = build_pr_comment(self.config, self.violations)
+                self.git_client.create_pull_request_comment(self.config.pr, comment)
 
     def post_commit_status(self):
         """
