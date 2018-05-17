@@ -52,6 +52,8 @@ class LintlyBuild(object):
         if not self.config.pr:
             raise NotPullRequestException
 
+        logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
+
         parser = PARSERS.get(self.config.format)
         self._all_violations = parser.parse_violations(self.linter_output)
         logger.info('Lintly found violations in {} files'.format(len(self._all_violations)))
