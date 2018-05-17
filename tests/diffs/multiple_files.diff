@@ -1,0 +1,25 @@
+diff --git a/my_file_name.py b/my_file_name.py
+index c375d7e..4520b34 100644
+--- a/my_file_name.py
++++ b/my_file_name.py
+@@ -1,5 +1,10 @@
++from collections import *
++from decimal import Decimal
++
+ class Test:
+-    pass
++
++    def __init__(self):
++        print x
+
+diff --git a/test_different_commits.py b/test_different_commits.py
+index 2dd4180..710ebbd 100644
+--- a/test_different_commits.py
++++ b/test_different_commits.py
+@@ -8,3 +8,6 @@ def function_two(self):
+ def function_three(self):
+     pass
+
++def function_four(self):
++    pass
++

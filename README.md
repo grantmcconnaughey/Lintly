@@ -61,7 +61,7 @@ Lintly works out of the box with the following Continuous Integration platforms:
 
 When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be provided automatically.
 
-## Travis CI
+### Travis CI
 
 To use with Lintly with Travis CI, add the following to your `.travis.yml` config file:
 
@@ -82,4 +82,3 @@ stages:
 
 - Config: Fail on any issue or diff issues
 - Support for [stylelint](https://stylelint.io/)
-- Maybe port [this library](https://github.com/pvdlg/env-ci) to Python to support additional CI providers

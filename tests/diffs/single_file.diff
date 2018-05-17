@@ -1,0 +1,23 @@
+diff --git a/dir1/dir2/britecore.py b/dir1/dir2/britecore.py
+index 0853f5f..4602b67 100755
+--- a/dir1/dir2/britecore.py
++++ b/dir1/dir2/britecore.py
+@@ -267,9 +267,7 @@ def validate_uinfo(self):
+                                                                 'more.ajax_suggest',
+                                                                 'payments.views')
+                     else:
+-                        self.is_auth = (web.ctx.path == '/' or
+-                                        'agent' in web.ctx.path or
+-                                        'global/components' in web.ctx.path)
++                        self.is_auth = True
+                 else:
+                     self.is_auth = True
+
+@@ -773,7 +776,7 @@ def handler(self):
+
+             # Use seeother so the url reflects britecore vs agent
+             # This is important for a few js rules that use the URL
+-            raise web.seeother(render_this)
++        raise web.seeother(render_this + '?' + urlencode(web.input()))
+
+         self._return = ('text/html', TemplateHandler().render(render_this, assets=COMPILED_ASSETS))

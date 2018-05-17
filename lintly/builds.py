@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from .exceptions import NotPullRequestException
 from .git.github import GitHubBackend
@@ -96,7 +95,7 @@ class LintlyBuild(object):
         if self.config.post_status:
             logger.info('Commit statuses enabled')
             try:
-                logger.info('Posting status to commit SHA {}'.format(self.config.commit_sha))
+                logger.info('Posting {} status to commit SHA {}'.format(state, self.config.commit_sha))
                 self.git_client.post_status(
                     state,
                     description,

@@ -1,0 +1,13 @@
+diff --git a/mccabe.py b/mccabe.py
+index a6a69eb..c7543c1 100644
+--- a/mccabe.py
++++ b/mccabe.py
+@@ -58,4 +58,6 @@ def test_mccabe():
+     elif c < 8:
+         print 'Less than 8'
+     elif c < 9:
+-        print 'Less than 9'
+\ No newline at end of file
++        print 'Less than 9'
++    elif c < 10:
++        print 'Less than 10'
