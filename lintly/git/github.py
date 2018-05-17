@@ -168,7 +168,7 @@ class GitHubBackend(BaseGitBackend):
             if comment.user.login == bot:
                 comment.delete()
 
-    def _get_pr_diff(self, pr):
+    def get_pr_diff(self, pr):
         client = GitHubAPIClient(token=self.token)
         client.base_url = 'https://github.com'
         diff_url = '/{owner}/{repo_name}/pull/{pr_number}.diff'.format(
@@ -182,7 +182,7 @@ class GitHubBackend(BaseGitBackend):
         return diff.decode('utf-8')
 
     def create_pull_request_review(self, pr, all_violations):
-        diff = self._get_pr_diff(pr)
+        diff = self.get_pr_diff(pr)
 
         patch = Patch(diff)
 

@@ -33,6 +33,12 @@ class BaseGitBackend(object):
         """
         raise NotImplementedError
 
+    def get_pr_diff(self, pr):
+        """
+        Returns a diff for a pull request.
+        """
+        raise NotImplementedError
+
     def create_pull_request_review(self, build):
         """
         Creates a pull request review for the given build.

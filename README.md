@@ -14,9 +14,13 @@ Next, set the `LINTLY_API_KEY` environment variable to your GitHub API Key:
 
     $ export LINTLY_API_KEY="12345"
 
-Finally, simply pipe the output of your linter to Lintly:
+Finally, pipe the output of your linter to `lintly`:
 
     $ flake8 | lintly
+
+Now you will see linting errors in your Pull Requests! Nifty!
+
+![Lintly used on a pull request](./example.png)
 
 ## Support Git Services
 
@@ -80,5 +84,4 @@ stages:
 
 ## To-Do
 
-- Config: Fail on any issue or diff issues
 - Support for [stylelint](https://stylelint.io/)

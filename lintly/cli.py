@@ -7,6 +7,7 @@ import click
 from .builds import LintlyBuild
 from .ci import find_ci_provider
 from .config import Config
+from .constants import FAIL_ON_ANY, FAIL_ON_NEW
 from .exceptions import NotPullRequestException
 from .parsers import PARSERS
 
@@ -36,6 +37,11 @@ logger = logging.getLogger(__name__)
 @click.option('--commit-sha',
               envvar='LINTLY_COMMIT_SHA',
               help='The commit Lintly is running against.')
+@click.option('--fail-on',
+              envvar='LINTLY_FAIL_ON',
+              type=click.Choice([FAIL_ON_ANY, FAIL_ON_NEW]),
+              default=FAIL_ON_ANY,
+              help='Whether Lintly should fail if any violations are detected or only if new violations are detected.')
 @click.option('--post-status/--no-post-status',
               default=True,
               help='Used to determine if Lintly should post a PR status to GitHub.')
@@ -61,7 +67,7 @@ def main(**options):
         sys.exit(0)
 
     # Exit with the number of files that have violations
-    sys.exit(len(build.all_violations))
+    sys.exit(len(build.violations))
 
 
 def configure_logging():
