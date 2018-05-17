@@ -61,7 +61,7 @@ def main(**options):
         sys.exit(0)
 
     # Exit with the number of files that have violations
-    sys.exit(len(build.all_violations))
+    sys.exit(len(build.violations))
 
 
 def configure_logging():
