@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/grantmcconnaughey/Lintly.svg?branch=master)](https://travis-ci.org/grantmcconnaughey/Lintly) [![codecov](https://codecov.io/gh/grantmcconnaughey/lintly/branch/master/graph/badge.svg)](https://codecov.io/gh/grantmcconnaughey/lintly)
 
-Slurp up linter output and send it to a GitHub PR review.
+Slurp up linter output and send it to a GitHub PR review. The CLI version of [lintly.com](https://lintly.com).
 
 ## Usage
 
