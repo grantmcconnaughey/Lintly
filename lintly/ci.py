@@ -113,24 +113,19 @@ class CodeBuild(object):
 
 
 def find_ci_provider():
-    if 'TRAVIS' in os.environ:
-        logger.info('Travis CI detected')
-        return Travis()
-    elif 'CIRCLECI' in os.environ:
-        logger.info('Circle CI detected')
-        return CircleCI()
-    elif 'APPVEYOR' in os.environ:
-        logger.info('AppVeyor detected')
-        return AppVeyor()
-    elif 'SHIPPABLE' in os.environ:
-        logger.info('Shippable detected')
-        return Shippable()
-    elif 'SEMAPHORE' in os.environ:
-        logger.info('Semaphore detected')
-        return Semaphore()
-    elif 'CODEBUILD_BUILD_ID' in os.environ:
-        logger.info('CodeBuild detected')
-        return CodeBuild()
+    providers = [
+        ('TRAVIS', Travis),
+        ('CIRCLECI', CircleCI),
+        ('APPVEYOR', AppVeyor),
+        ('SHIPPABLE', Shippable),
+        ('SEMAPHORE', Semaphore),
+        ('CODEBUILD_BUILD_ID', CodeBuild),
+    ]
+
+    for provider in providers:
+        if provider[0] in os.environ:
+            logger.info('CI {} detected'.format(provider[1].__name__))
+            return provider[1]
     else:
         logger.info('No CI detected')
         return None
