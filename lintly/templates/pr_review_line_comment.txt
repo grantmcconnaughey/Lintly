@@ -1,1 +1,1 @@
-:frowning: {{ violation.code }}: {{ violation.message }}
+{{ violation.code }}: {{ violation.message }}  {{ LINTLY_IDENTIFIER }}

@@ -7,6 +7,7 @@ import requests
 
 from github import GithubException, UnknownObjectException, Github
 
+from lintly.constants import LINTLY_IDENTIFIER
 from lintly.formatters import build_pr_review_line_comment
 from lintly.patch import Patch
 
@@ -219,9 +220,7 @@ class GitHubBackend(BaseGitBackend):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_pull(int(pr))
         for comment in pull_request.get_review_comments():
-            # TODO: Come up with some identifier than indicates the PR review
-            # comment came from Lintly and therefore can be deleted
-            if ':frowning:' in comment.body:
+            if LINTLY_IDENTIFIER in comment.body:
                 comment.delete()
 
     def post_status(self, state, description, sha, target_url=''):

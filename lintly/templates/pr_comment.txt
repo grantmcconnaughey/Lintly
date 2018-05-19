@@ -11,3 +11,5 @@ The following code quality issues were introduced:
 {% endfor %}
 
 {% endfor %}
+
+{{ LINTLY_IDENTIFIER }}
