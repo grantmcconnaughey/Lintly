@@ -1,5 +1,8 @@
 import logging
 import os
+import re
+
+from . import git
 
 
 logger = logging.getLogger(__name__)
@@ -85,6 +88,26 @@ class Semaphore(object):
         return os.environ['REVISION']
 
 
+class CodeBuild(object):
+
+    REPO_REGEX = r'.+github\.com/(?P<repo>.+\/.+)\.git'
+
+    @property
+    def pr(self):
+        # CODEBUILD_SOURCE_VERSION=pr/1
+        return os.environ['CODEBUILD_SOURCE_VERSION'].split('/')[1]
+
+    @property
+    def repo(self):
+        # CODEBUILD_SOURCE_REPO_URL=https://github.com/owner/repo.git
+        match = re.match(self.REPO_REGEX, os.environ['CODEBUILD_SOURCE_REPO_URL'])
+        return match.group('repo')
+
+    @property
+    def commit_sha(self):
+        return git.head()
+
+
 def find_ci_provider():
     if 'TRAVIS' in os.environ:
         logger.info('Travis CI detected')
@@ -101,6 +124,9 @@ def find_ci_provider():
     elif 'SEMAPHORE' in os.environ:
         logger.info('Semaphore detected')
         return Semaphore()
+    elif 'CODEBUILD_BUILD_ID' in os.environ:
+        logger.info('CodeBuild detected')
+        return CodeBuild()
     else:
         logger.info('No CI detected')
         return None

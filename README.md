@@ -58,6 +58,7 @@ Lintly works out of the box with the following Continuous Integration platforms:
 - AppVeyor
 - Shippable
 - Semaphore
+- CodeBuild
 
 When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be provided automatically.
 
@@ -82,3 +83,7 @@ stages:
 
 - Config: Fail on any issue or diff issues
 - Support for [stylelint](https://stylelint.io/)
+- Configuration to post either a PR comment or PR review
+- Link to Build URL from commit status
+- Support for config file
+- Documentation
