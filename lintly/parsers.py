@@ -58,12 +58,49 @@ class LineRegexParser(BaseLintParser):
         return violations
 
 
+class ESLintParser(BaseLintParser):
+
+    def parse_violations(self, output):
+        violations = collections.defaultdict(list)
+
+        current_file = None
+
+        # Collect all the issues into a dict where the keys are the file paths and the values are a
+        # list of the issues in that file.
+        for line in output.strip().splitlines():
+            if line.startswith(' '):
+                # This line is a linting violation
+                regex = r'^(?P<line>\d+):(?P<column>\d+)\s+(error|warning)\s+(?P<message>.*)\s+(?P<code>.+)$'
+                match = re.match(regex, line.strip())
+
+                violation = Violation(
+                    line=int(match.group('line')),
+                    column=int(match.group('column')),
+                    code=match.group('code').strip(),
+                    message=match.group('message').strip()
+                )
+                violations[current_file].append(violation)
+            elif line.startswith('✖'):
+                # We're at the end of the file
+                break
+            else:
+                # This line is a file path
+                current_file = os.path.normpath(line)
+
+        return violations
+
+
 # TODO: Switch this to more of a registry pattern
 PARSERS = {
     # Default flake8 format
     # docs/conf.py:230:1: E265 block comment should start with '# '
     # path:line:column: CODE message
     'unix': LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$'),
+
+    # ESLint's default formatter
+    # /Users/grant/project/file1.js
+    #     1:1    error  '$' is not defined                              no-undef
+    'eslint': ESLintParser(),
 
     # ESLint's unix formatter
     # lintly/static/js/scripts.js:69:1: 'lintly' is not defined. [Error/no-undef]

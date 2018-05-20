@@ -36,7 +36,7 @@ Now you will see linting errors in your Pull Requests! Nifty!
     ```
 - [eslint](https://eslint.org/)
     ```
-    $ eslint --format=unix | lintly --format=eslint-unix
+    $ eslint | lintly --format=eslint
     ```
 
 Additional linters can be added by modifying the `lintly/parsers.py` module.
@@ -94,3 +94,4 @@ stages:
 - Link to Build URL from commit status
 - Support for config file
 - Documentation
+- Auto-detect formats
