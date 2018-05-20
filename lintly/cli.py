@@ -47,14 +47,15 @@ logger = logging.getLogger(__name__)
               help='Used to determine if Lintly should post a PR status to GitHub.')
 @click.option('--log',
               is_flag=True,
-              help='Send Lintly debug logs to the console.')
+              help='Send Lintly debug logs to stdout.')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
-    if options.get('log'):
-        configure_logging()
+    configure_logging(log_all=options.get('log'))
 
     stdin_stream = click.get_text_stream('stdin')
     stdin_text = stdin_stream.read()
+
+    click.echo(stdin_text)
 
     ci = find_ci_provider()
     config = Config(options, ci=ci)
@@ -70,7 +71,8 @@ def main(**options):
     sys.exit(len(build.violations))
 
 
-def configure_logging():
+def configure_logging(log_all=False):
+    log_level = 'DEBUG' if log_all else 'WARNING'
     logging.config.dictConfig({
         'version': 1,
         'disable_existing_loggers': False,
@@ -81,7 +83,7 @@ def configure_logging():
         },
         'handlers': {
             'default': {
-                'level': 'DEBUG',
+                'level': log_level,
                 'class': 'logging.StreamHandler',
                 'formatter': 'standard'
             },
@@ -89,7 +91,7 @@ def configure_logging():
         'loggers': {
             'lintly': {
                 'handlers': ['default'],
-                'level': 'DEBUG',
+                'level': log_level,
                 'propagate': True
             }
         }
