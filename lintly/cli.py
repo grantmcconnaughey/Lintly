@@ -89,7 +89,7 @@ def configure_logging():
         'loggers': {
             'lintly': {
                 'handlers': ['default'],
-                'level': 'INFO',
+                'level': 'DEBUG',
                 'propagate': True
             }
         }
