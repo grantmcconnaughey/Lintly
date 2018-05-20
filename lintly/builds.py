@@ -55,7 +55,7 @@ class LintlyBuild(object):
 
         logger.debug('Using the following configuration:')
         for name, value in self.config.as_dict().items():
-            logger.debug('- {}={}'.format(name, value))
+            logger.debug('  - {}={}'.format(name, value))
 
         logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
 
@@ -63,20 +63,24 @@ class LintlyBuild(object):
         self._all_violations = parser.parse_violations(self.linter_output)
         logger.info('Lintly found violations in {} files'.format(len(self._all_violations)))
 
-        self._diff_violations = self.find_diff_violations()
+        diff = self.get_pr_diff()
+        patch = self.get_pr_patch(diff)
+        self._diff_violations = self.find_diff_violations(patch)
         logger.info('Lintly found diff violations in {} files'.format(len(self._diff_violations)))
 
-        self.post_pr_comment()
+        self.post_pr_comment(patch)
         self.post_commit_status()
 
-    def find_diff_violations(self):
+    def get_pr_diff(self):
+        return self.git_client.get_pr_diff(self.config.pr)
+
+    def get_pr_patch(self, diff):
+        return Patch(diff)
+
+    def find_diff_violations(self, patch):
         """
         Uses the diff for this build to find changed lines that also have violations.
         """
-        diff = self.git_client.get_pr_diff(self.config.pr)
-
-        patch = Patch(diff)
-
         violations = collections.defaultdict(list)
         for line in patch.changed_lines:
             file_violations = self._all_violations.get(line['file_name'])
@@ -90,7 +94,7 @@ class LintlyBuild(object):
 
         return violations
 
-    def post_pr_comment(self):
+    def post_pr_comment(self, patch):
         """
         Posts a comment to the GitHub PR if the diff results have issues.
         """
@@ -105,7 +109,7 @@ class LintlyBuild(object):
                 self.git_client.delete_pull_request_review_comments(self.config.pr)
 
                 logger.info('Creating PR review')
-                self.git_client.create_pull_request_review(self.config.pr, self._diff_violations)
+                self.git_client.create_pull_request_review(self.config.pr, patch, self._diff_violations)
                 post_pr_comment = False
             except GitClientError as e:
                 # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
@@ -120,7 +124,7 @@ class LintlyBuild(object):
                 logger.info('Deleting old PR comment')
                 self.git_client.delete_pull_request_comments(self.config.pr)
 
-                logger.info('Creating PR comment for')
+                logger.info('Creating PR comment')
                 comment = build_pr_comment(self.config, self.violations)
                 self.git_client.create_pull_request_comment(self.config.pr, comment)
 
@@ -144,16 +148,16 @@ class LintlyBuild(object):
         """
         if self.config.post_status:
             logger.info('Commit statuses enabled')
-            try:
+            if self.config.commit_sha:
                 logger.info('Posting {} status to commit SHA {}'.format(state, self.config.commit_sha))
                 self.git_client.post_status(
                     state,
                     description,
                     sha=self.config.commit_sha
                 )
-                logger.info('Posted commit status')
-            except NotFoundError:
-                # Silently fail if commit statuses can't be created
-                logger.warning('Could not create status because project could not be found')
+            else:
+                logger.warning('Cannot post commit status because no commit SHA has been '
+                               'specified. Either use the --commit-sha CLI argument or '
+                               'set the LINTLY_COMMIT_SHA environment variable.')
         else:
             logger.info('Commit statuses disabled')

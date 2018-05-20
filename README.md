@@ -47,17 +47,18 @@ Additional linters can be added by modifying the `lintly/parsers.py` module.
 
 ## Configuration
 
-At the minimum, Lintly needs to know the following information to determine how to post the correct GitHub PR Review:
+At a minimum Lintly needs to know the following information to determine how to post the correct GitHub PR Review:
 
 - GitHub API key
-    - Generate your own [API Key here](https://github.com/settings/tokens/new). Your API key will need the following GitHub scopes:
+    - Generate your own [API Key here](https://github.com/settings/tokens/new). The API key will need the following GitHub scopes:
         - `repo:status` so that Lintly can post commit statuses on PRs.
         - `public_repo` so that Lintly can create pull request reviews on public repos.
         - `repo` so that Lintly can create pull request reviews on private repos.
 - GitHub repository
-    > Note: Some Continuous Integration tools will provide this value automatically.
+    - This is your repository in the format `grantmcconnaughey/lintly`.
+    > Note: Some Continuous Integration platforms will provide this value automatically.
 - Pull Request number
-    > Note: Some Continuous Integration tools will provide this value automatically.
+    > Note: Some Continuous Integration platforms will provide this value automatically.
 
 These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI.
 

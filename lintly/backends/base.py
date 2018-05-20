@@ -39,13 +39,13 @@ class BaseGitBackend(object):
         """
         raise NotImplementedError
 
-    def create_pull_request_review(self, build):
+    def create_pull_request_review(self, pr, patch, all_violations):
         """
         Creates a pull request review for the given build.
         """
         raise NotImplementedError
 
-    def delete_pull_request_review_comments(self, pr, bot):
+    def delete_pull_request_review_comments(self, pr):
         """
         Deletes all pull request review comments for the bot account.
         """

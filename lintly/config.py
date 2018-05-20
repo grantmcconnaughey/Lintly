@@ -1,4 +1,5 @@
-# Merge config with configuration pulled from CI providers
+
+REDACTED = '********'
 
 
 class Config(object):
@@ -13,7 +14,7 @@ class Config(object):
             'pr': self.pr,
             'repo': self.repo,
             'commit_sha': self.commit_sha,
-            'api_key': self.api_key,
+            'api_key': REDACTED,
             'format': self.format,
             'site_url': self.site_url,
             'fail_on': self.fail_on,

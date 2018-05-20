@@ -143,11 +143,11 @@ class GitLabBackend(BaseGitBackend):
                 client.delete(url)
 
     @translate_gitlab_exception
-    def create_pull_request_review(self, build):
+    def create_pull_request_review(self, pr, patch, all_violations):
         raise NotSupportedError()
 
     @translate_gitlab_exception
-    def delete_pull_request_review_comments(self, pr, bot):
+    def delete_pull_request_review_comments(self, pr):
         raise NotSupportedError()
 
     @translate_gitlab_exception

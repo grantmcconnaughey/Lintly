@@ -17,10 +17,10 @@ class DummyGitBackend(BaseGitBackend):
     def delete_pull_request_comments(self, pr, bot):
         pass
 
-    def create_pull_request_review(self, build):
+    def create_pull_request_review(self, pr, patch, all_violations):
         pass
 
-    def delete_pull_request_review_comments(self, pr, bot):
+    def delete_pull_request_review_comments(self, pr):
         pass
 
     def post_status(self, state, description, sha, target_url):

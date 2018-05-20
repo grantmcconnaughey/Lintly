@@ -153,11 +153,7 @@ class GitHubBackend(BaseGitBackend):
 
         return diff.decode('utf-8')
 
-    def create_pull_request_review(self, pr, all_violations):
-        diff = self.get_pr_diff(pr)
-
-        patch = Patch(diff)
-
+    def create_pull_request_review(self, pr, patch, all_violations):
         comments = []
         for file_path in all_violations:
             violations = all_violations[file_path]
