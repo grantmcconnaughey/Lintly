@@ -7,8 +7,8 @@ class BaseGitBackend(object):
     supports_pr_reviews = False
 
     def __init__(self, token, project):
-        self.project = project
         self.token = token
+        self.project = project
 
     def __repr__(self):
         token = '********' if self.token else 'None'
@@ -52,10 +52,4 @@ class BaseGitBackend(object):
         raise NotImplementedError
 
     def post_status(self, state, description, sha, target_url):
-        raise NotImplementedError
-
-    def user_is_collaborator(self, full_name, user_login):
-        """
-        Returns True if the user is a collaborator of the project.
-        """
         raise NotImplementedError

@@ -6,13 +6,14 @@ import logging
 
 import gitlab
 import requests
-from gitlab.v4.objects import VISIBILITY_PUBLIC
+
+from lintly.constants import LINTLY_IDENTIFIER
 
 from .base import BaseGitBackend
 from .errors import (
     NotSupportedError, NotFoundError, GitClientError, UnauthorizedError
 )
-from .objects import PullRequest, Repository, Owner
+from .objects import PullRequest
 
 
 logger = logging.getLogger(__name__)
@@ -104,39 +105,9 @@ class GitLabBackend(BaseGitBackend):
 
     supports_pr_reviews = False
 
-    def __init__(self, project=None, user=None, token=None):
-        super(GitLabBackend, self).__init__(project, user, token)
-        self.client = get_gitlab_client(self.project, self.user, token=token)
-
-    def _gitlab_owner_to_owner(self, gl_owner):
-        owner = Owner(
-            login=gl_owner['id'],
-            name=gl_owner['name'],
-        )
-        return owner
-
-    def _gitlab_group_to_owner(self, gl_group):
-        owner = Owner(
-            login=gl_group.full_path,
-            name=gl_group.path,
-        )
-        return owner
-
-    def _gitlab_project_to_repository(self, gl_project):
-        owner = self._gitlab_owner_to_owner(gl_project.owner)
-        repo = Repository(
-            service='gitlab',
-            name=gl_project.name,
-            full_name=gl_project.path_with_namespace,
-            clone_url=gl_project.http_url_to_repo,
-            default_branch=gl_project.default_branch,
-            private=gl_project.visibility != VISIBILITY_PUBLIC,
-            description=gl_project.description,
-            external_url=gl_project.web_url,
-            admin=gl_project.permissions['project_access']['access_level'] >= gitlab.MASTER_ACCESS,
-            owner=owner
-        )
-        return repo
+    def __init__(self, token, project):
+        super(GitLabBackend, self).__init__(token, project)
+        self.client = gitlab.Gitlab(GITLAB_URL, token, api_version=str(GITLAB_API_VERSION))
 
     @translate_gitlab_exception
     def get_pull_request(self, pr):
@@ -165,7 +136,7 @@ class GitLabBackend(BaseGitBackend):
         mr = project.mergerequests.list(iid=pr)[0]
         client = GitLabAPIClient(self.token, self.user, self.project)
         for note in mr.notes.list(all=True, per_page=DEFAULT_PER_PAGE):
-            if note.author.username == bot:
+            if LINTLY_IDENTIFIER in note.body:
                 url = '/projects/{project_id}/merge_requests/{mr_id}/notes/{note_id}'.format(
                     project_id=project.id, mr_id=mr.id, note_id=note.id
                 )
@@ -190,16 +161,3 @@ class GitLabBackend(BaseGitBackend):
                                    'description': description,
                                    'target_url': target_url,
                                    'name': 'Lintly'})
-
-    @translate_gitlab_exception
-    def user_is_collaborator(self, full_name, user_login):
-        project = self.client.projects.get(self.project.full_name)
-        return project.permissions['project_access']['access_level'] >= gitlab.DEVELOPER_ACCESS
-
-
-def get_gitlab_client(token=None):
-    """
-    Returns a GitLab client object for a given token, user, or project.
-    :return: The GitLab client
-    """
-    return gitlab.Gitlab(GITLAB_URL, token, api_version=str(GITLAB_API_VERSION))
