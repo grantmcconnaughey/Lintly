@@ -81,7 +81,7 @@ def configure_logging():
         },
         'handlers': {
             'default': {
-                'level': 'INFO',
+                'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
                 'formatter': 'standard'
             },
@@ -89,7 +89,7 @@ def configure_logging():
         'loggers': {
             'lintly': {
                 'handlers': ['default'],
-                'level': 'INFO',
+                'level': 'DEBUG',
                 'propagate': True
             }
         }

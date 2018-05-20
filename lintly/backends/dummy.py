@@ -25,6 +25,3 @@ class DummyGitBackend(BaseGitBackend):
 
     def post_status(self, state, description, sha, target_url):
         pass
-
-    def user_is_collaborator(self, full_name, user_login):
-        return True

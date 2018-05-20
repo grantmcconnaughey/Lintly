@@ -13,7 +13,7 @@ from lintly.patch import Patch
 
 from .base import BaseGitBackend
 from .errors import NotFoundError, GitClientError
-from .objects import Repository, Owner, PullRequest
+from .objects import PullRequest
 
 
 logger = logging.getLogger(__name__)
@@ -102,39 +102,10 @@ class GitHubBackend(BaseGitBackend):
 
     def __init__(self, token, project):
         super(GitHubBackend, self).__init__(token, project)
-        self.client = get_github_client(token)
+        self.client = Github(token, user_agent=GITHUB_USER_AGENT, per_page=DEFAULT_PER_PAGE)
 
-    def _github_repo_to_repository(self, gh_repo):
-        """
-        Organizations attached to a repository do not have their email or name fields filled in.
-        """
-        gh_owner = gh_repo.owner
-        owner = Owner(
-            login=gh_owner.login,
-            type_=gh_owner.type,
-        )
-        repo = Repository(
-            name=gh_repo.name,
-            full_name=gh_repo.full_name,
-            clone_url=gh_repo.clone_url,
-            default_branch=gh_repo.default_branch,
-            private=gh_repo.private,
-            description=gh_repo.description,
-            external_url=gh_repo.html_url,
-            homepage=gh_repo.homepage,
-            admin=gh_repo.permissions.admin,
-            owner=owner
-        )
-        return repo
-
-    def _github_owner_to_owner(self, gh_owner):
-        owner = Owner(
-            login=gh_owner.login,
-            name=gh_owner.name,
-            email=gh_owner.email,
-            type_=gh_owner.type
-        )
-        return owner
+    def _should_delete_comment(self, comment):
+        return LINTLY_IDENTIFIER in comment.body
 
     @translate_github_exception
     def get_pull_request(self, pr):
@@ -166,7 +137,7 @@ class GitHubBackend(BaseGitBackend):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_issue(int(pr))
         for comment in pull_request.get_comments():
-            if comment.user.login == bot:
+            if self._should_delete_comment(comment):
                 comment.delete()
 
     def get_pr_diff(self, pr):
@@ -220,7 +191,7 @@ class GitHubBackend(BaseGitBackend):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_pull(int(pr))
         for comment in pull_request.get_review_comments():
-            if LINTLY_IDENTIFIER in comment.body:
+            if self._should_delete_comment(comment):
                 comment.delete()
 
     def post_status(self, state, description, sha, target_url=''):
@@ -236,16 +207,3 @@ class GitHubBackend(BaseGitBackend):
             'context': 'Lintly'
         }
         client.post(url, data)
-
-    @translate_github_exception
-    def user_is_collaborator(self, full_name, user_login):
-        repo = self.client.get_repo(full_name)
-        return repo.has_in_collaborators(user_login)
-
-
-def get_github_client(token):
-    """
-    Returns a Github client object for a given token, user, or project.
-    :return: The Github client
-    """
-    return Github(token, user_agent=GITHUB_USER_AGENT, per_page=DEFAULT_PER_PAGE)

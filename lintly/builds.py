@@ -53,6 +53,10 @@ class LintlyBuild(object):
         if not self.config.pr:
             raise NotPullRequestException
 
+        logger.debug('Using the following configuration:')
+        for name, value in self.config.as_dict().items():
+            logger.debug('- {}={}'.format(name, value))
+
         logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
 
         parser = PARSERS.get(self.config.format)
@@ -107,14 +111,14 @@ class LintlyBuild(object):
                 # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
                 # so that we don't have to check for a specific message in the exception
                 if 'Viewer does not have permission to review this pull request' in str(e):
-                    logger.info("Could not post PR review (the bot account didn't have permission)")
+                    logger.warning("Could not post PR review (the account didn't have permission)")
                     pass
                 else:
                     raise
 
             if post_pr_comment:
-                # logger.info('Deleting old PR comment')
-                # self.git_client.delete_pull_request_comments(self.config.pr, bot=self.bot.username)
+                logger.info('Deleting old PR comment')
+                self.git_client.delete_pull_request_comments(self.config.pr)
 
                 logger.info('Creating PR comment for')
                 comment = build_pr_comment(self.config, self.violations)
