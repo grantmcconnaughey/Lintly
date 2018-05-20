@@ -8,6 +8,18 @@ class Config(object):
         self.cli_config = cli_config
         self.ci = ci
 
+    def as_dict(self):
+        return {
+            'pr': self.pr,
+            'repo': self.repo,
+            'commit_sha': self.commit_sha,
+            'api_key': self.api_key,
+            'format': self.format,
+            'site_url': self.site_url,
+            'fail_on': self.fail_on,
+            'post_status': self.post_status,
+        }
+
     @property
     def pr(self):
         return self.cli_config['pr'] or getattr(self.ci, 'pr')

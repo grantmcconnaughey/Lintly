@@ -92,6 +92,7 @@ class Semaphore(object):
         return os.environ['REVISION']
 
 
+# https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
 class CodeBuild(object):
 
     REPO_REGEX = r'.+github\.com/(?P<repo>.+\/.+)\.git'

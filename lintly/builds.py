@@ -53,6 +53,10 @@ class LintlyBuild(object):
         if not self.config.pr:
             raise NotPullRequestException
 
+        logger.debug('Using the following configuration:')
+        for name, value in self.config.as_dict().items():
+            logger.debug('- {}={}'.format(name, value))
+
         logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
 
         parser = PARSERS.get(self.config.format)
