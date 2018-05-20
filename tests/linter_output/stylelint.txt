@@ -1,0 +1,7 @@
+lintly/static/sass/file1.scss
+ 13:1  ✖  Expected no more than 1 empty line   max-empty-lines
+
+lintly/static/sass/file2.scss
+  11:1   ✖  Expected empty line before at-rule                     at-rule-empty-line-before
+  27:1   ✖  Expected no more than 1 empty line                     max-empty-lines
+  31:22  ✖  Expected a leading zero                                number-leading-zero

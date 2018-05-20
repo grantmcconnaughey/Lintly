@@ -27,3 +27,22 @@ class ESLintParserTests(unittest.TestCase):
 
         assert '/Users/grant/project/file2.js' in violations
         assert len(violations['/Users/grant/project/file2.js']) == 2
+
+
+class StylelintParserTests(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = PARSERS['stylelint']
+
+    def test_parse(self):
+        output = load_output('stylelint.txt')
+
+        violations = self.parser.parse_violations(output)
+
+        self.assertEqual(len(violations), 2)
+
+        assert 'lintly/static/sass/file1.scss' in violations
+        assert len(violations['lintly/static/sass/file1.scss']) == 1
+
+        assert 'lintly/static/sass/file2.scss' in violations
+        assert len(violations['lintly/static/sass/file2.scss']) == 3

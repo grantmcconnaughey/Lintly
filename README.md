@@ -38,6 +38,10 @@ Now you will see linting errors in your Pull Requests! Nifty!
     ```
     $ eslint | lintly --format=eslint
     ```
+- [stylelint](https://stylelint.io/)
+    ```
+    $ stylelint | lintly --format=stylelint
+    ```
 
 Additional linters can be added by modifying the `lintly/parsers.py` module.
 
@@ -89,7 +93,7 @@ stages:
 
 ## To-Do
 
-- Support for [stylelint](https://stylelint.io/)
+- Fix linters that output absolute paths
 - Configuration to post either a PR comment or PR review
 - Link to Build URL from commit status
 - Support for config file
