@@ -32,15 +32,20 @@ Now you will see linting errors in your Pull Requests! Nifty!
 
 - [flake8](http://flake8.pycqa.org/en/latest/)
     ```
-    $ flake8 | lintly
+    $ flake8 | lintly --format=flake8
+    ```
+- [pylint](https://www.pylint.org/)
+    - For pylint you must use the `json` output format.
+    ```
+    $ pylint . --output-format=json | lintly --format=pylint-json
     ```
 - [eslint](https://eslint.org/)
     ```
-    $ eslint | lintly --format=eslint
+    $ eslint . | lintly --format=eslint
     ```
 - [stylelint](https://stylelint.io/)
     ```
-    $ stylelint | lintly --format=stylelint
+    $ stylelint . | lintly --format=stylelint
     ```
 
 Additional linters can be added by modifying the `lintly/parsers.py` module.

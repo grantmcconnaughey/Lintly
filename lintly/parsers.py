@@ -3,6 +3,7 @@
 Parsers accept linter output and return file paths and all of the violations in that file.
 """
 import collections
+import json
 import os
 import re
 
@@ -54,6 +55,49 @@ class LineRegexParser(BaseLintParser):
                 message=match.group('message')
             )
 
+            violations[path].append(violation)
+
+        return violations
+
+
+class PylintJSONParser(BaseLintParser):
+    """
+    Pylint JSON format:
+
+        [
+            {
+                "type": "convention",
+                "module": "lintly.backends.base",
+                "obj": "BaseGitBackend.post_status",
+                "line": 54,
+                "column": 4,
+                "path": "lintly/backends/base.py",
+                "symbol": "missing-docstring",
+                "message": "Missing method docstring",
+                "message-id": "C0111"
+            }
+        ]
+    """
+
+    def parse_violations(self, output):
+        # Sometimes pylint will output "No config file found, using default configuration".
+        # This handles that case by removing that line.
+        if output and output.startswith('No config'):
+            output = '\n'.join(output.splitlines()[1:])
+
+        json_data = json.loads(output)
+
+        violations = collections.defaultdict(list)
+
+        for violation_json in json_data:
+            violation = Violation(
+                line=violation_json['line'],
+                column=violation_json['column'],
+                code='{} ({})'.format(violation_json['message-id'], violation_json['symbol']),
+                message=violation_json['message']
+            )
+
+            path = os.path.normpath(violation_json['path'])
             violations[path].append(violation)
 
         return violations
@@ -122,11 +166,18 @@ class StylelintParser(BaseLintParser):
         return violations
 
 
+DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
+
+
 PARSERS = {
     # Default flake8 format
     # docs/conf.py:230:1: E265 block comment should start with '# '
     # path:line:column: CODE message
-    'unix': LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$'),
+    'unix': DEFAULT_PARSER,
+    'flake8': DEFAULT_PARSER,
+
+    # Pylint ---output-format=json
+    'pylint-json': PylintJSONParser(),
 
     # ESLint's default formatter
     # /Users/grant/project/file1.js

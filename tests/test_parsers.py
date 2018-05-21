@@ -10,6 +10,25 @@ def load_output(file_name):
         return f.read()
 
 
+class PylintJSONParser(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = PARSERS['pylint-json']
+
+    def test_parse(self):
+        output = load_output('pylint-json.txt')
+
+        violations = self.parser.parse_violations(output)
+
+        self.assertEqual(len(violations), 2)
+
+        assert 'lintly/patch.py' in violations
+        assert len(violations['lintly/patch.py']) == 2
+
+        assert 'lintly/config.py' in violations
+        assert len(violations['lintly/config.py']) == 3
+
+
 class ESLintParserTests(unittest.TestCase):
 
     def setUp(self):

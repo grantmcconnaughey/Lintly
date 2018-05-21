@@ -1,0 +1,58 @@
+No config file found, using default configuration
+[
+    {
+        "type": "warning",
+        "module": "lintly.patch",
+        "obj": "",
+        "line": 22,
+        "column": 0,
+        "path": "lintly/patch.py",
+        "symbol": "fixme",
+        "message": "TODO: Cache this",
+        "message-id": "W0511"
+    },
+    {
+        "type": "convention",
+        "module": "lintly.patch",
+        "obj": "",
+        "line": 1,
+        "column": 0,
+        "path": "lintly/patch.py",
+        "symbol": "missing-docstring",
+        "message": "Missing module docstring",
+        "message-id": "C0111"
+    },
+    {
+        "type": "convention",
+        "module": "lintly.config",
+        "obj": "",
+        "line": 6,
+        "column": 0,
+        "path": "lintly/config.py",
+        "symbol": "line-too-long",
+        "message": "Line too long (112/100)",
+        "message-id": "C0301"
+    },
+    {
+        "type": "convention",
+        "module": "lintly.config",
+        "obj": "",
+        "line": 1,
+        "column": 0,
+        "path": "lintly/config.py",
+        "symbol": "missing-docstring",
+        "message": "Missing module docstring",
+        "message-id": "C0111"
+    },
+    {
+        "type": "convention",
+        "module": "lintly.config",
+        "obj": "Config.__init__",
+        "line": 10,
+        "column": 8,
+        "path": "lintly/config.py",
+        "symbol": "invalid-name",
+        "message": "Attribute name \"ci\" doesn't conform to snake_case naming style",
+        "message-id": "C0103"
+    }
+]
