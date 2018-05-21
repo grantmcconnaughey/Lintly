@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Parsers accept linter output and return file paths and all of the violations in that file.
 """

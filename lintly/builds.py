@@ -4,7 +4,7 @@ import logging
 from .constants import FAIL_ON_ANY
 from .exceptions import NotPullRequestException
 from .backends.github import GitHubBackend
-from .backends.errors import GitClientError, NotFoundError
+from .backends.errors import GitClientError
 from .formatters import build_pr_comment
 from .parsers import PARSERS
 from .patch import Patch
