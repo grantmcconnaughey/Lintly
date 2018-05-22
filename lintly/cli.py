@@ -16,15 +16,18 @@ logger = logging.getLogger(__name__)
 
 
 @click.command()
-@click.option('--pr',
-              envvar='LINTLY_PR',
-              help='The pull request number for this build')
 @click.option('--api-key',
               envvar='LINTLY_API_KEY',
               help='The GitHub API key to use for commenting on PRs')
 @click.option('--repo',
               envvar='LINTLY_REPO',
               help='The GitHub repo name in the format {owner}/{repo}')
+@click.option('--pr',
+              envvar='LINTLY_PR',
+              help='The pull request number for this build')
+@click.option('--commit-sha',
+              envvar='LINTLY_COMMIT_SHA',
+              help='The commit Lintly is running against.')
 @click.option('--format',
               envvar='LINTLY_FORMAT',
               type=click.Choice(list(PARSERS.keys())),
@@ -34,9 +37,6 @@ logger = logging.getLogger(__name__)
               envvar='LINTLY_SITE_URL',
               default='github.com',
               help='The GitHub URL to use. Defaults to github.com. Override this if you use GitHub Enterprise.')
-@click.option('--commit-sha',
-              envvar='LINTLY_COMMIT_SHA',
-              help='The commit Lintly is running against.')
 @click.option('--fail-on',
               envvar='LINTLY_FAIL_ON',
               type=click.Choice([FAIL_ON_ANY, FAIL_ON_NEW]),
