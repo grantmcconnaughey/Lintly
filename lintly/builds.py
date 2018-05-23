@@ -55,7 +55,7 @@ class LintlyBuild(object):
 
         logger.debug('Using the following configuration:')
         for name, value in self.config.as_dict().items():
-            logger.debug('  - {}={}'.format(name, value))
+            logger.debug('  - {}={}'.format(name, repr(value)))
 
         logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
 
