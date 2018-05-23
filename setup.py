@@ -9,6 +9,7 @@ dependencies = [
     'PyGithub<2.0',
     'python-gitlab<2.0',
     'sh<1.13',
+    'six',
 ]
 
 setup(
