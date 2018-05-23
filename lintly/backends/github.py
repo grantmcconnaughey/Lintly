@@ -142,8 +142,8 @@ class GitHubBackend(BaseGitBackend):
 
     def get_pr_diff(self, pr):
         client = GitHubAPIClient(token=self.token)
-        client.base_url = 'https://github.com'
-        diff_url = '/{owner}/{repo_name}/pull/{pr_number}.diff'.format(
+        client.base_url = 'https://api.github.com'
+        diff_url = '/{owner}/{repo_name}/pull/{pr_number}'.format(
             owner=self.project.owner_login,
             repo_name=self.project.name,
             pr_number=pr
