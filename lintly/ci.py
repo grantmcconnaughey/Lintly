@@ -110,7 +110,7 @@ class CodeBuild(object):
 
     @property
     def commit_sha(self):
-        return git.head()
+        return git.head()[:40]
 
 
 def find_ci_provider():
