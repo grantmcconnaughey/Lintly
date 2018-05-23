@@ -1,7 +1,7 @@
 import sh
-import six
 
 
 def head():
     """Returns the head commit"""
-    return six.u(sh.git('rev-parse', 'HEAD').stdout[:40])
+    sha = sh.git('rev-parse', 'HEAD').stdout[:40]
+    return sha.decode('utf-8')
