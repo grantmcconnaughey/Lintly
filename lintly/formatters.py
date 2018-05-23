@@ -10,6 +10,10 @@ from .constants import LINTLY_IDENTIFIER
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), 'templates')
 
+print('FORMATTER PATH IS:')
+print(__file__)
+print(TEMPLATES_PATH)
+
 
 env = Environment(
     loader=FileSystemLoader(TEMPLATES_PATH),
