@@ -124,7 +124,7 @@ def find_ci_provider():
     ]
 
     for provider in providers:
-        if provider[0] in os.environ:
+        if provider[0] in   os.environ:
             logger.info('CI {} detected'.format(provider[1].__name__))
             return provider[1]()
     else:
