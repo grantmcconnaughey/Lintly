@@ -104,3 +104,4 @@ stages:
 - Link to Build URL from commit status
 - Support for config file
 - Auto-detect formats
+- GitLab support
