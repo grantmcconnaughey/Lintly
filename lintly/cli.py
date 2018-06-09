@@ -33,10 +33,10 @@ logger = logging.getLogger(__name__)
               type=click.Choice(list(PARSERS.keys())),
               default='unix',
               help='The linting output format Lintly should expect to receive')
-@click.option('--site-url',
-              envvar='LINTLY_SITE_URL',
-              default='github.com',
-              help='The GitHub URL to use. Defaults to github.com. Override this if you use GitHub Enterprise.')
+# @click.option('--site-url',
+#               envvar='LINTLY_SITE_URL',
+#               default='github.com',
+#               help='The GitHub URL to use. Defaults to github.com. Override this if you use GitHub Enterprise.')
 @click.option('--fail-on',
               envvar='LINTLY_FAIL_ON',
               type=click.Choice([FAIL_ON_ANY, FAIL_ON_NEW]),

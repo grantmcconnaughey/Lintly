@@ -99,6 +99,7 @@ stages:
 
 ## To-Do
 
+- Add support for GitHub Enterprise custom GitHub URLs
 - Fix linters that output absolute paths
 - Configuration to post either a PR comment or PR review
 - Link to Build URL from commit status
