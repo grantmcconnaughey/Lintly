@@ -1,5 +1,6 @@
 import os
 import unittest
+from unittest.mock import patch
 
 from lintly.parsers import PARSERS
 
@@ -34,18 +35,19 @@ class ESLintParserTests(unittest.TestCase):
     def setUp(self):
         self.parser = PARSERS['eslint']
 
-    def test_parse(self):
+    @patch('os.getcwd', return_value='/Users/grant/project')
+    def test_parse(self, getcwd_mock):
         output = load_output('eslint.txt')
 
         violations = self.parser.parse_violations(output)
 
         self.assertEqual(len(violations), 2)
 
-        assert '/Users/grant/project/file1.js' in violations
-        assert len(violations['/Users/grant/project/file1.js']) == 3
+        assert 'static/file1.js' in violations
+        assert len(violations['static/file1.js']) == 3
 
-        assert '/Users/grant/project/file2.js' in violations
-        assert len(violations['/Users/grant/project/file2.js']) == 2
+        assert 'static/file2.js' in violations
+        assert len(violations['static/file2.js']) == 2
 
 
 class StylelintParserTests(unittest.TestCase):

@@ -15,6 +15,13 @@ class BaseLintParser(object):
     def parse_violations(self, output):
         raise NotImplementedError
 
+    def _normalize_path(self, path):
+        """
+        Normalizes a file path so that it returns a path relative to the root repo directory.
+        """
+        norm_path = os.path.normpath(path)
+        return os.path.relpath(norm_path, start=os.getcwd())
+
 
 class LineRegexParser(BaseLintParser):
     """
@@ -46,7 +53,7 @@ class LineRegexParser(BaseLintParser):
             if not match:
                 continue
 
-            path = os.path.normpath(match.group('path'))
+            path = self._normalize_path(match.group('path'))
 
             violation = Violation(
                 line=int(match.group('line')),
@@ -58,6 +65,15 @@ class LineRegexParser(BaseLintParser):
             violations[path].append(violation)
 
         return violations
+
+
+class LineRegexParserFactory(object):
+
+    def __init__(self, regex):
+        self.regex = regex
+
+    def __call__(self):
+        return LineRegexParser()
 
 
 class PylintJSONParser(BaseLintParser):
@@ -97,7 +113,7 @@ class PylintJSONParser(BaseLintParser):
                 message=violation_json['message']
             )
 
-            path = os.path.normpath(violation_json['path'])
+            path = self._normalize_path(violation_json['path'])
             violations[path].append(violation)
 
         return violations
@@ -132,7 +148,7 @@ class ESLintParser(BaseLintParser):
                 # TODO: ESLint defaults to absolute paths rather than relative paths, which
                 # will fail when matching against files in a diff.
                 # This line is a file path
-                current_file = os.path.normpath(line)
+                current_file = self._normalize_path(line)
 
         return violations
 
@@ -161,7 +177,7 @@ class StylelintParser(BaseLintParser):
                 violations[current_file].append(violation)
             else:
                 # This line is a file path
-                current_file = os.path.normpath(line)
+                current_file = self._normalize_path(line)
 
         return violations
 
@@ -194,5 +210,4 @@ PARSERS = {
     # lintly/static/sass/file1.scss
     #   13:1  ✖  Expected no more than 1 empty line   max-empty-lines
     'stylelint': StylelintParser(),
-
 }

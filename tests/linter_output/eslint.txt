@@ -1,9 +1,9 @@
-/Users/grant/project/file1.js
+/Users/grant/project/static/file1.js
     1:1    error  '$' is not defined                              no-undef
     1:11   error  Missing space before function parentheses       space-before-function-paren
     2:1    error  Expected indentation of 2 spaces but found 4    indent
 
-/Users/grant/project/file2.js
+/Users/grant/project/static/file2.js
    3:1   error  Expected indentation of 4 spaces but found 8    indent
    4:68  error  Extra semicolon                                 semi
 
