@@ -1,5 +1,6 @@
 tox
 flake8
+mock
 pytest
 codecov
 coverage
