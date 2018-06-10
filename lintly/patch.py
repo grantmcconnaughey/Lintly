@@ -1,6 +1,9 @@
 import logging
 import re
 
+from cached_property import cached_property
+
+
 FILE_NAME_LINE = re.compile(r'^\+\+\+ b/(?P<file_name>.+)')
 RANGE_INFORMATION_LINE = re.compile(r'^@@ .+\+(?P<line_number>\d+),')
 MODIFIED_LINE = re.compile(r'^\+(?!\+|\+)')
@@ -19,8 +22,7 @@ class Patch(object):
     def __init__(self, body=''):
         self.body = body
 
-    # TODO: Cache this
-    @property
+    @cached_property
     def changed_lines(self):
         """
         A list of dicts in the format:

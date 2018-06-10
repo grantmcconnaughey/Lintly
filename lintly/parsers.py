@@ -148,8 +148,6 @@ class ESLintParser(BaseLintParser):
                 # We're at the end of the file
                 break
             else:
-                # TODO: ESLint defaults to absolute paths rather than relative paths, which
-                # will fail when matching against files in a diff.
                 # This line is a file path
                 current_file = self._normalize_path(line)
 
