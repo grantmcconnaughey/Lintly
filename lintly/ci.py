@@ -114,7 +114,7 @@ class CodeBuild(object):
 
 
 def find_ci_provider():
-    providers = [
+    ci_providers = [
         ('TRAVIS', Travis),
         ('CIRCLECI', CircleCI),
         ('APPVEYOR', AppVeyor),
@@ -123,10 +123,10 @@ def find_ci_provider():
         ('CODEBUILD_BUILD_ID', CodeBuild),
     ]
 
-    for provider in providers:
-        if provider[0] in os.environ:
-            logger.info('CI {} detected'.format(provider[1].__name__))
-            return provider[1]()
+    for ci_env_var, ci_cls in ci_providers:
+        if ci_env_var in os.environ:
+            logger.info('CI {} detected'.format(ci_cls.__name__))
+            return ci_cls()
     else:
         logger.info('No CI detected')
         return None
