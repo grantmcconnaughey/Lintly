@@ -9,7 +9,6 @@ from github import GithubException, UnknownObjectException, Github
 
 from lintly.constants import LINTLY_IDENTIFIER
 from lintly.formatters import build_pr_review_line_comment
-from lintly.patch import Patch
 
 from .base import BaseGitBackend
 from .errors import NotFoundError, GitClientError
