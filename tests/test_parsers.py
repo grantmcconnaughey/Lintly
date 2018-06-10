@@ -38,8 +38,8 @@ class ESLintParserTests(unittest.TestCase):
     def setUp(self):
         self.parser = PARSERS['eslint']
 
-    @patch('os.getcwd', return_value='/Users/grant/project')
-    def test_parse(self, getcwd_mock):
+    @patch('lintly.parsers.ESLintParser._get_working_dir', return_value='/Users/grant/project')
+    def test_parse(self, get_working_dir_mock):
         output = load_output('eslint.txt')
 
         violations = self.parser.parse_violations(output)

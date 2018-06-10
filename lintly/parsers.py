@@ -15,12 +15,15 @@ class BaseLintParser(object):
     def parse_violations(self, output):
         raise NotImplementedError
 
+    def _get_working_dir(self):
+        return os.getcwd()
+
     def _normalize_path(self, path):
         """
         Normalizes a file path so that it returns a path relative to the root repo directory.
         """
         norm_path = os.path.normpath(path)
-        return os.path.relpath(norm_path, start=os.getcwd())
+        return os.path.relpath(norm_path, start=self._get_working_dir())
 
 
 class LineRegexParser(BaseLintParser):

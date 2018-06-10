@@ -10,6 +10,8 @@ First, `pip` install lintly:
 
     $ pip install lintly
 
+> Note: Lintly works with Python 2.7 and 3.4+.
+
 Next, set the `LINTLY_API_KEY` environment variable to your GitHub API Key:
 
     $ export LINTLY_API_KEY="12345"
@@ -22,7 +24,7 @@ Now you will see linting errors in your Pull Requests! Nifty!
 
 ![Lintly used on a pull request](./example.png)
 
-## Support Git Services
+## Supported Git Services
 
 - GitHub
 
@@ -67,7 +69,7 @@ At a minimum Lintly needs to know the following information to determine how to 
 
 These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI. A list of all configuration values can be viewed by running `lintly --help`.
 
-## Using Lintly with Continuous Integration platforms
+## Supported Continuous Integration platforms
 
 Lintly works out of the box with the following Continuous Integration platforms:
 
@@ -103,5 +105,5 @@ stages:
 - Configuration to post either a PR comment or PR review
 - Link to Build URL from commit status
 - Support for config file
-- Auto-detect formats
+- Auto-detect linters
 - GitLab support
