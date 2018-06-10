@@ -1,3 +1,6 @@
+[run]
+include = lintly/*
+
 [report]
 exclude_lines =
     pragma: no cover
