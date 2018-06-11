@@ -16,7 +16,6 @@ class Config(object):
             'commit_sha': self.commit_sha,
             'api_key': REDACTED,
             'format': self.format,
-            'site_url': self.site_url,
             'fail_on': self.fail_on,
             'post_status': self.post_status,
         }
@@ -40,10 +39,6 @@ class Config(object):
     @property
     def format(self):
         return self.cli_config['format']
-
-    @property
-    def site_url(self):
-        return self.cli_config['site_url']
 
     @property
     def fail_on(self):
