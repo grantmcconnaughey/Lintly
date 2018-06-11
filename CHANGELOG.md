@@ -1,6 +1,10 @@
 # Lintly Changelog
 
-## 0.1.0 (Not released)
+## 0.1.1 (June 10, 2018)
+
+* Add README in PyPI
+
+## 0.1.0 (June 10, 2018)
 
 * Initial release
 * Support for Python 2.7 and 3.4+

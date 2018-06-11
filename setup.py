@@ -1,6 +1,8 @@
 """
 Slurp up linter output and send it to a GitHub PR review.
 """
+import codecs
+import os
 from setuptools import find_packages, setup
 
 dependencies = [
@@ -13,15 +15,23 @@ dependencies = [
     'six',
 ]
 
+
+def read(*parts):
+    filename = os.path.join(os.path.dirname(__file__), *parts)
+    with codecs.open(filename, encoding='utf-8') as fp:
+        return fp.read()
+
+
 setup(
     name='lintly',
-    version='0.1.0',
+    version='0.1.1',
     url='https://github.com/grantmcconnaughey/lintly',
     license='BSD',
     author='Grant McConnaughey',
     author_email='grantmcconnaughey@gmail.com',
     description='Slurp up linter output and send it to a GitHub PR review.',
-    long_description=__doc__,
+    long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     zip_safe=False,
