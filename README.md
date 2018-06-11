@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/grantmcconnaughey/Lintly.svg?branch=master)](https://travis-ci.org/grantmcconnaughey/Lintly) [![codecov](https://codecov.io/gh/grantmcconnaughey/lintly/branch/master/graph/badge.svg)](https://codecov.io/gh/grantmcconnaughey/lintly)
 
-Slurp up linter output and send it to a GitHub PR review. The CLI version of [lintly.com](https://lintly.com).
+A Continuous Integration CLI that slurps up linter output and sends it to a GitHub PR review.
 
 ## Usage
 
@@ -10,13 +10,13 @@ First, `pip` install lintly:
 
     $ pip install lintly
 
-> Note: Lintly works with Python 2.7 and 3.4+.
+> Lintly requires Python 2.7 or 3.4+.
 
 Next, set the `LINTLY_API_KEY` environment variable to your GitHub API Key:
 
     $ export LINTLY_API_KEY="12345"
 
-Finally, pipe the output of your linter to `lintly`:
+Finally, pipe the output of your linter to the `lintly` script:
 
     $ flake8 | lintly
 
@@ -80,9 +80,9 @@ Lintly works out of the box with the following Continuous Integration platforms:
 - Semaphore
 - CodeBuild
 
-When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be provided automatically.
+When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be detected automatically.
 
-### Travis CI
+### Travis CI example
 
 To use with Lintly with Travis CI, add the following to your `.travis.yml` config file:
 
@@ -93,7 +93,7 @@ jobs:
   include:
     - stage: lint
       install: pip install lintly
-      script: flake8 | lintly
+      script: flake8 | lintly --format=flake8
 
 stages:
   - lint
