@@ -1,2 +1,2 @@
-include *.md *.txt LICENSE
+include *.md *.txt *.png LICENSE
 recursive-include lintly *.txt
