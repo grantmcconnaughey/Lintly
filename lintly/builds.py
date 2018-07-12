@@ -138,7 +138,7 @@ class LintlyBuild(object):
                 self.introduced_issues_count, plural)
             self._post_status('failure', description)
         else:
-            self._post_status('success', 'Linting introduced no new issues.')
+            self._post_status('success', 'Linting detected no new issues.')
 
     def _post_status(self, state, description):
         """
