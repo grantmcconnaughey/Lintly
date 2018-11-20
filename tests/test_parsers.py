@@ -76,6 +76,21 @@ class ParserTestCaseMixin(metaclass=abc.ABCMeta):
             self.assertEqual(getattr(_object, expected_attr), expected_value)
 
 
+class Flake8ParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['flake8']
+    linter_output_file_name = 'flake8.txt'
+    expected_violations = {
+        'lintly/parsers.py': [
+            {'line': 80, 'column': 5, 'code': 'E303', 'message': 'too many blank lines (3)'},
+            {'line': 216, 'column': 1, 'code': 'W391', 'message': 'blank line at end of file'}
+        ],
+        'lintly/violations.py': [
+            {'line': 1, 'column': 1, 'code': 'F401', 'message': '\'itertools\' imported but unused'},
+            {'line': 20, 'column': 5, 'code': 'C901', 'message': '\'Violation.complex_method\' is too complex (11)'}
+        ]
+    }
+
+
 class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'

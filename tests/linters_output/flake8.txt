@@ -1,0 +1,4 @@
+./lintly/parsers.py:80:5: E303 too many blank lines (3)
+./lintly/parsers.py:216:1: W391 blank line at end of file
+./lintly/violations.py:1:1: F401 'itertools' imported but unused
+./lintly/violations.py:20:5: C901 'Violation.complex_method' is too complex (11)
