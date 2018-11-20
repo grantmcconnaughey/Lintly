@@ -1,3 +1,4 @@
+import abc
 import os
 import unittest
 try:
@@ -8,21 +9,43 @@ except ImportError:
 from lintly.parsers import PARSERS
 
 
-def load_output(file_name):
-    path = os.path.join(os.path.dirname(__file__), 'linter_output', file_name)
-    with open(path) as f:
-        return f.read()
+class ParserTestCase(unittest.TestCase):
+    """Base class for testing parsers.
 
+    Attributes
+    ----------
+    linter_output : str
+        A linter output to test against.
+    """
 
-class PylintJSONParser(unittest.TestCase):
+    @property
+    @abc.abstractmethod
+    def parser(self):
+        """lintly.parsers.BaseLintParser: a parser to test."""
+        pass
+
+    @property
+    @abc.abstractmethod
+    def linter_output_file_name(self):
+        """str: linter output file name (relative to the `linters_output` directory)."""
+        pass
+
+    @staticmethod
+    def load_linter_output(file_name):
+        path = os.path.join(os.path.dirname(__file__), 'linters_output', file_name)
+        with open(path, 'r') as linter_output:
+            return linter_output.read()
 
     def setUp(self):
-        self.parser = PARSERS['pylint-json']
+        self.linter_output = self.load_linter_output(self.linter_output_file_name)
+
+
+class PylintJSONParserTestCase(ParserTestCase):
+    parser = PARSERS['pylint-json']
+    linter_output_file_name = 'pylint-json.txt'
 
     def test_parse(self):
-        output = load_output('pylint-json.txt')
-
-        violations = self.parser.parse_violations(output)
+        violations = self.parser.parse_violations(self.linter_output)
 
         self.assertEqual(len(violations), 2)
 
@@ -33,16 +56,13 @@ class PylintJSONParser(unittest.TestCase):
         assert len(violations['lintly/config.py']) == 3
 
 
-class ESLintParserTests(unittest.TestCase):
-
-    def setUp(self):
-        self.parser = PARSERS['eslint']
+class ESLintParserTestCase(ParserTestCase):
+    parser = PARSERS['eslint']
+    linter_output_file_name = 'eslint.txt'
 
     @patch('lintly.parsers.ESLintParser._get_working_dir', return_value='/Users/grant/project')
-    def test_parse(self, get_working_dir_mock):
-        output = load_output('eslint.txt')
-
-        violations = self.parser.parse_violations(output)
+    def test_parse(self, _get_working_dir_mock):
+        violations = self.parser.parse_violations(self.linter_output)
 
         self.assertEqual(len(violations), 2)
 
@@ -53,15 +73,12 @@ class ESLintParserTests(unittest.TestCase):
         assert len(violations['static/file2.js']) == 2
 
 
-class StylelintParserTests(unittest.TestCase):
-
-    def setUp(self):
-        self.parser = PARSERS['stylelint']
+class StylelintParserTestCase(ParserTestCase):
+    parser = PARSERS['stylelint']
+    linter_output_file_name = 'stylelint.txt'
 
     def test_parse(self):
-        output = load_output('stylelint.txt')
-
-        violations = self.parser.parse_violations(output)
+        violations = self.parser.parse_violations(self.linter_output)
 
         self.assertEqual(len(violations), 2)
 
