@@ -9,8 +9,8 @@ except ImportError:
 from lintly.parsers import PARSERS
 
 
-class ParserTestCase(unittest.TestCase):
-    """Base class for testing parsers.
+class ParserTestCaseMixin(metaclass=abc.ABCMeta):
+    """Mixin for testing parsers.
 
     Attributes
     ----------
@@ -30,6 +30,24 @@ class ParserTestCase(unittest.TestCase):
         """str: linter output file name (relative to the `linters_output` directory)."""
         pass
 
+    @property
+    @abc.abstractmethod
+    def expected_violations(self):
+        """dict: a mapping between files and expected violations' attributes.
+
+        Examples
+        --------
+        {
+            'path/to/file': [{
+                'line': 42,
+                'column': 42,
+                'code': 'the-answer',
+                'message': 'don\'t panic & bring your towel'
+            }]
+        }
+        """
+        pass
+
     @staticmethod
     def load_linter_output(file_name):
         path = os.path.join(os.path.dirname(__file__), 'linters_output', file_name)
@@ -39,51 +57,80 @@ class ParserTestCase(unittest.TestCase):
     def setUp(self):
         self.linter_output = self.load_linter_output(self.linter_output_file_name)
 
+    def test_parse_violations(self):
+        violations = self.parser.parse_violations(self.linter_output)
+        # Checking files.
+        self.assertEqual(set(violations.keys()), set(self.expected_violations.keys()))
+        # Checking violations.
+        for file_path, violations in violations.items():
+            expected_violations = self.expected_violations[file_path]
+            # Checking violations count.
+            self.assertEqual(len(violations), len(expected_violations))
+            # Checking violations' attributes.
+            for violation_index, violation in enumerate(violations):
+                self.check_object_attrs(violation, expected_violations[violation_index])
 
-class PylintJSONParserTestCase(ParserTestCase):
+    def check_object_attrs(self, _object, expected_attrs):
+        for expected_attr, expected_value in expected_attrs.items():
+            self.assertTrue(hasattr(_object, expected_attr))
+            self.assertEqual(getattr(_object, expected_attr), expected_value)
+
+
+class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'
+    expected_violations = {
+        'lintly/patch.py': [
+            {'line': 22, 'column': 0, 'code': 'W0511 (fixme)', 'message': 'TODO: Cache this'},
+            {'line': 1, 'column': 0, 'code': 'C0111 (missing-docstring)', 'message': 'Missing module docstring'}
+        ],
+        'lintly/config.py': [
+            {'line': 6, 'column': 0, 'code': 'C0301 (line-too-long)', 'message': 'Line too long (112/100)'},
+            {'line': 1, 'column': 0, 'code': 'C0111 (missing-docstring)', 'message': 'Missing module docstring'},
+            {
+                'line': 10, 'column': 8, 'code': 'C0103 (invalid-name)',
+                'message': 'Attribute name "ci" doesn\'t conform to snake_case naming style'
+            }
+        ]
+    }
 
-    def test_parse(self):
-        violations = self.parser.parse_violations(self.linter_output)
 
-        self.assertEqual(len(violations), 2)
-
-        assert 'lintly/patch.py' in violations
-        assert len(violations['lintly/patch.py']) == 2
-
-        assert 'lintly/config.py' in violations
-        assert len(violations['lintly/config.py']) == 3
-
-
-class ESLintParserTestCase(ParserTestCase):
+class ESLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['eslint']
     linter_output_file_name = 'eslint.txt'
+    expected_violations = {
+        'static/file1.js': [
+            {'line': 1, 'column': 1, 'code': 'no-undef', 'message': '\'$\' is not defined'},
+            {
+                'line': 1, 'column': 11, 'code': 'space-before-function-paren',
+                'message': 'Missing space before function parentheses'
+            },
+            {'line': 2, 'column': 1, 'code': 'indent', 'message': 'Expected indentation of 2 spaces but found 4'}
+        ],
+        'static/file2.js': [
+            {'line': 3, 'column': 1, 'code': 'indent', 'message': 'Expected indentation of 4 spaces but found 8'},
+            {'line': 4, 'column': 68, 'code': 'semi', 'message': 'Extra semicolon'}
+        ]
+    }
 
     @patch('lintly.parsers.ESLintParser._get_working_dir', return_value='/Users/grant/project')
-    def test_parse(self, _get_working_dir_mock):
-        violations = self.parser.parse_violations(self.linter_output)
-
-        self.assertEqual(len(violations), 2)
-
-        assert 'static/file1.js' in violations
-        assert len(violations['static/file1.js']) == 3
-
-        assert 'static/file2.js' in violations
-        assert len(violations['static/file2.js']) == 2
+    def test_parse_violations(self, _get_working_dir_mock):
+        super().test_parse_violations()
 
 
-class StylelintParserTestCase(ParserTestCase):
+class StylelintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['stylelint']
     linter_output_file_name = 'stylelint.txt'
-
-    def test_parse(self):
-        violations = self.parser.parse_violations(self.linter_output)
-
-        self.assertEqual(len(violations), 2)
-
-        assert 'lintly/static/sass/file1.scss' in violations
-        assert len(violations['lintly/static/sass/file1.scss']) == 1
-
-        assert 'lintly/static/sass/file2.scss' in violations
-        assert len(violations['lintly/static/sass/file2.scss']) == 3
+    expected_violations = {
+        'lintly/static/sass/file1.scss': [
+            {'line': 13, 'column': 1, 'code': 'max-empty-lines', 'message': 'Expected no more than 1 empty line'}
+        ],
+        'lintly/static/sass/file2.scss': [
+            {
+                'line': 11, 'column': 1, 'code': 'at-rule-empty-line-before',
+                'message': 'Expected empty line before at-rule'
+            },
+            {'line': 27, 'column': 1, 'code': 'max-empty-lines', 'message': 'Expected no more than 1 empty line'},
+            {'line': 31, 'column': 22, 'code': 'number-leading-zero', 'message': 'Expected a leading zero'}
+        ]
+    }
