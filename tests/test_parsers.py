@@ -9,7 +9,7 @@ except ImportError:
 from lintly.parsers import PARSERS
 
 
-class ParserTestCaseMixin(metaclass=abc.ABCMeta):
+class ParserTestCaseMixin(object):
     """Mixin for testing parsers.
 
     Attributes
@@ -17,6 +17,7 @@ class ParserTestCaseMixin(metaclass=abc.ABCMeta):
     linter_output : str
         A linter output to test against.
     """
+    __metaclass__ = abc.ABCMeta
 
     @property
     @abc.abstractmethod
@@ -130,7 +131,7 @@ class ESLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
 
     @patch('lintly.parsers.ESLintParser._get_working_dir', return_value='/Users/grant/project')
     def test_parse_violations(self, _get_working_dir_mock):
-        super().test_parse_violations()
+        super(ESLintParserTestCase, self).test_parse_violations()
 
 
 class StylelintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
