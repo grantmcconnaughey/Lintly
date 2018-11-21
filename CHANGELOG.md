@@ -1,5 +1,9 @@
 # Lintly Changelog
 
+## 0.2.0 (November 21, 2018)
+
+* Support for [Black](https://black.readthedocs.io/en/stable/)
+
 ## 0.1.2 (June 10, 2018)
 
 * Initial release

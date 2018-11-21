@@ -36,6 +36,10 @@ Now you will see linting errors in your Pull Requests! Nifty!
     ```
     $ flake8 | lintly --format=flake8
     ```
+- [black](https://black.readthedocs.io/en/stable/)
+    ```
+    $ black --check | lintly --format=black
+    ```
 - [pylint](https://www.pylint.org/)
     - For pylint you must use the `json` output format.
     ```

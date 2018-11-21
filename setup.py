@@ -24,7 +24,7 @@ def read(*parts):
 
 setup(
     name='lintly',
-    version='0.1.2',
+    version='0.2.0',
     url='https://github.com/grantmcconnaughey/lintly',
     license='BSD',
     author='Grant McConnaughey',
