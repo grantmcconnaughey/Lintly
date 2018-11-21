@@ -152,10 +152,14 @@ class StylelintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     }
 
 
-class BlackCheckParserTestCase(ParserTestCaseMixin, unittest.TestCase):
-    parser = PARSERS['black-check']
-    linter_output_file_name = 'black-check.txt'
+class BlackParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['black']
+    linter_output_file_name = 'black.txt'
     expected_violations = {
         file_path: [{'line': 1, 'column': 1, 'code': '`black`', 'message': 'this file needs to be formatted'}]
         for file_path in ['lintly/violations.py', 'lintly/parsers.py']
     }
+
+    @patch('lintly.parsers.BlackParser._get_working_dir', return_value='/Users/jouyuy/Dev/workspace/Lintly')
+    def test_parse_violations(self, _get_working_dir_mock):
+        super(BlackParserTestCase, self).test_parse_violations()

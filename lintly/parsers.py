@@ -183,7 +183,7 @@ class StylelintParser(BaseLintParser):
         return violations
 
 
-class BlackCheckParser(BaseLintParser):
+class BlackParser(BaseLintParser):
     """A parser for the `black [source] --check` command."""
 
     def parse_violations(self, output):
@@ -229,5 +229,5 @@ PARSERS = {
     'stylelint': StylelintParser(),
 
     # Black's check command default formatter.
-    'black-check': BlackCheckParser(),
+    'black': BlackParser(),
 }
