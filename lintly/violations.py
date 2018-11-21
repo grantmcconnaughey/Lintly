@@ -1,4 +1,3 @@
-
 class Violation(object):
 
     def __init__(self, line, column, code, message):
