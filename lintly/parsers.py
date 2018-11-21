@@ -183,6 +183,22 @@ class StylelintParser(BaseLintParser):
         return violations
 
 
+class BlackCheckParser(BaseLintParser):
+    """A parser for the `black [source] --check` command."""
+
+    def parse_violations(self, output):
+        violations = {}
+        for line in output.strip().splitlines():
+            # That means a file needs to be formatted by `black`.
+            if line.startswith('would reformat '):
+                # Last part is the file path.
+                path = self._normalize_path(line.split(' ')[-1])
+                violations[path] = [Violation(
+                    line=1, column=1, code='`black`', message='this file needs to be formatted'
+                )]
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -211,4 +227,7 @@ PARSERS = {
     # lintly/static/sass/file1.scss
     #   13:1  ✖  Expected no more than 1 empty line   max-empty-lines
     'stylelint': StylelintParser(),
+
+    # Black's check command default formatter.
+    'black-check': BlackCheckParser(),
 }

@@ -149,3 +149,12 @@ class StylelintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
             {'line': 31, 'column': 22, 'code': 'number-leading-zero', 'message': 'Expected a leading zero'}
         ]
     }
+
+
+class BlackCheckParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['black-check']
+    linter_output_file_name = 'black-check.txt'
+    expected_violations = {
+        file_path: [{'line': 1, 'column': 1, 'code': '`black`', 'message': 'this file needs to be formatted'}]
+        for file_path in ['lintly/violations.py', 'lintly/parsers.py']
+    }
