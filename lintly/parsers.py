@@ -209,24 +209,29 @@ class CfnLintParser(BaseLintParser):
     """
 
     def parse_violations(self, output):
-        violations = {}
+        violations = collections.defaultdict(list)
 
         regex = re.compile(r"[EW]\d{4}\s")
 
-        marker = False
+        next_line_is_path = False
         current_violation = None
         for line in output.strip().splitlines():
             if regex.match(line):
-                marker = True
+                # This line is a cfn-lint error or warning
+                next_line_is_path = True
                 current_violation = line
-            elif marker:
+            elif next_line_is_path:
+                # This line is a filepath:line_number:column_number
                 path, line_number, column = line.split(":")
                 path = self._normalize_path(path)
 
-                violations.setdefault(path, [])
-                violations[path].append(Violation(line=int(line_number), column=int(column), code="`cfn-lint`", message=current_violation))
+                violation = Violation(line=int(line_number),
+                                      column=int(column),
+                                      code="`cfn-lint`",
+                                      message=current_violation)
+                violations[path].append(violation)
 
-                marker = False
+                next_line_is_path = False
                 current_violation = None
 
         return violations
