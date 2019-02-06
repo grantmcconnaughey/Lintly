@@ -163,3 +163,18 @@ class BlackParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     @patch('lintly.parsers.BlackParser._get_working_dir', return_value='/Users/jouyuy/Dev/workspace/Lintly')
     def test_parse_violations(self, _get_working_dir_mock):
         super(BlackParserTestCase, self).test_parse_violations()
+
+
+class CfnLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['cfn-lint']
+    linter_output_file_name = 'cfn-lint.txt'
+
+    expected_violations = {
+        "templates/template.yaml": [
+            {'line': 2, 'column': 9, 'code': '`cfn-lint`', 'message': 'W2001 Parameter UnusedParameter not used.'},
+            {'line': 5, 'column': 9, 'code': '`cfn-lint`', 'message': 'W2001 Parameter AnotherOne not used.'}
+        ],
+        "templates/template2.yaml": [
+            {'line': 7, 'column': 9, 'code': '`cfn-lint`', 'message': 'E1012 Ref PrincipalOrgID not found as a resource or parameter'},
+        ]
+    }
