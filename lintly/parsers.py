@@ -216,8 +216,7 @@ class CfnLintParser(BaseLintParser):
         marker = False
         current_violation = None
         for line in output.strip().splitlines():
-            match = regex.match(line.strip())
-            if match:
+            if regex.match(line):
                 marker = True
                 current_violation = line
             elif marker:
