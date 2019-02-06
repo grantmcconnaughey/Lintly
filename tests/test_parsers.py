@@ -1,6 +1,7 @@
 import abc
 import os
 import unittest
+
 try:
     from unittest.mock import patch
 except ImportError:
@@ -175,6 +176,7 @@ class CfnLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
             {'line': 5, 'column': 9, 'code': '`cfn-lint`', 'message': 'W2001 Parameter AnotherOne not used.'}
         ],
         "templates/template2.yaml": [
-            {'line': 7, 'column': 9, 'code': '`cfn-lint`', 'message': 'E1012 Ref PrincipalOrgID not found as a resource or parameter'},
+            {'line': 7, 'column': 9, 'code': '`cfn-lint`',
+             'message': 'E1012 Ref PrincipalOrgID not found as a resource or parameter'},
         ]
     }
