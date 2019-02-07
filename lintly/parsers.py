@@ -229,7 +229,7 @@ class CfnLintParser(BaseLintParser):
 
                 violation = Violation(line=int(line_number),
                                       column=int(column),
-                                      code=f"`{code}`",
+                                      code="`{}`".format(code),
                                       message=message)
                 violations[path].append(violation)
 
