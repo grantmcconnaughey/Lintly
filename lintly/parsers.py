@@ -199,6 +199,46 @@ class BlackParser(BaseLintParser):
         return violations
 
 
+class CfnLintParser(BaseLintParser):
+    """A parser for the `cfn-lint` command.
+
+      cfn-lint output example:
+
+      W2001 Parameter UnusedParameter not used.
+      template.yaml:2:9
+    """
+
+    def parse_violations(self, output):
+        violations = collections.defaultdict(list)
+
+        regex = re.compile(r"[EW]\d{4}\s")
+
+        next_line_is_path = False
+        current_violation = None
+        for line in output.strip().splitlines():
+            if regex.match(line):
+                # This line is a cfn-lint error or warning
+                next_line_is_path = True
+                current_violation = line
+            elif next_line_is_path:
+                # This line is a filepath:line_number:column_number
+                path, line_number, column = line.split(":")
+                path = self._normalize_path(path)
+
+                code, message = current_violation.split(" ", 1)
+
+                violation = Violation(line=int(line_number),
+                                      column=int(column),
+                                      code=code,
+                                      message=message)
+                violations[path].append(violation)
+
+                next_line_is_path = False
+                current_violation = None
+
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -230,4 +270,7 @@ PARSERS = {
 
     # Black's check command default formatter.
     'black': BlackParser(),
+
+    # cfn-lint default formatter
+    'cfn-lint': CfnLintParser(),
 }

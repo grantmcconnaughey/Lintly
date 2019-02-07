@@ -1,0 +1,8 @@
+W2001 Parameter UnusedParameter not used.
+templates/template.yaml:2:9
+
+W2001 Parameter AnotherOne not used.
+templates/template.yaml:5:9
+
+E1012 Ref PrincipalOrgID not found as a resource or parameter
+templates/template2.yaml:7:9
