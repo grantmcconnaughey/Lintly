@@ -225,10 +225,12 @@ class CfnLintParser(BaseLintParser):
                 path, line_number, column = line.split(":")
                 path = self._normalize_path(path)
 
+                code, message = current_violation.split(" ", 1)
+
                 violation = Violation(line=int(line_number),
                                       column=int(column),
-                                      code="`cfn-lint`",
-                                      message=current_violation)
+                                      code=f"`{code}`",
+                                      message=message)
                 violations[path].append(violation)
 
                 next_line_is_path = False
