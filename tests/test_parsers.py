@@ -172,11 +172,11 @@ class CfnLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
 
     expected_violations = {
         "templates/template.yaml": [
-            {'line': 2, 'column': 9, 'code': '`cfn-lint`', 'message': 'W2001 Parameter UnusedParameter not used.'},
-            {'line': 5, 'column': 9, 'code': '`cfn-lint`', 'message': 'W2001 Parameter AnotherOne not used.'}
+            {'line': 2, 'column': 9, 'code': '`W2001`', 'message': 'Parameter UnusedParameter not used.'},
+            {'line': 5, 'column': 9, 'code': '`W2001`', 'message': 'Parameter AnotherOne not used.'}
         ],
         "templates/template2.yaml": [
-            {'line': 7, 'column': 9, 'code': '`cfn-lint`',
-             'message': 'E1012 Ref PrincipalOrgID not found as a resource or parameter'},
+            {'line': 7, 'column': 9, 'code': '`E1012`',
+             'message': 'Ref PrincipalOrgID not found as a resource or parameter'},
         ]
     }
