@@ -99,9 +99,10 @@ class GitHubBackend(BaseGitBackend):
 
     supports_pr_reviews = True
 
-    def __init__(self, token, project):
+    def __init__(self, token, project, context):
         super(GitHubBackend, self).__init__(token, project)
         self.client = Github(token, user_agent=GITHUB_USER_AGENT, per_page=DEFAULT_PER_PAGE)
+        self.context = context
 
     def _should_delete_comment(self, comment):
         return LINTLY_IDENTIFIER in comment.body
@@ -199,6 +200,6 @@ class GitHubBackend(BaseGitBackend):
             'state': state,
             'description': description,
             'target_url': target_url,
-            'context': 'Lintly'
+            'context': self.context
         }
         client.post(url, data)
