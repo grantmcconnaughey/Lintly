@@ -33,6 +33,10 @@ class Config(object):
         return self.cli_config['commit_sha'] or getattr(self.ci, 'commit_sha')
 
     @property
+    def context(self):
+        return self.cli_config['context']
+
+    @property
     def api_key(self):
         return self.cli_config['api_key']
 
