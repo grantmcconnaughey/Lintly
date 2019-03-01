@@ -1,7 +1,8 @@
 import pytest
-from lintly.config import Config
+from unittest.mock import Mock
+
 from lintly import builds
-from unittest.mock import patch, Mock
+from lintly.config import Config
 
 
 @pytest.fixture(
