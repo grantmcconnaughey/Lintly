@@ -28,14 +28,13 @@ logger = logging.getLogger(__name__)
 @click.option('--commit-sha',
               envvar='LINTLY_COMMIT_SHA',
               help='The commit Lintly is running against.')
-@click.option('--context',
-              default='Lintly',
-              help='The context used for commit statuses')
 @click.option('--format',
               envvar='LINTLY_FORMAT',
               type=click.Choice(list(PARSERS.keys())),
               default='unix',
               help='The linting output format Lintly should expect to receive')
+@click.option('--context',
+              help='Override the commit status context')
 # @click.option('--site-url',
 #               envvar='LINTLY_SITE_URL',
 #               default='github.com',
