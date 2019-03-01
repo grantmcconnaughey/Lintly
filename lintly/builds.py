@@ -21,7 +21,7 @@ class LintlyBuild(object):
         self.linter_output = linter_output
 
         self.project = Project(config.repo)
-        self.git_client = GitHubBackend(token=config.api_key, project=self.project)
+        self.git_client = GitHubBackend(token=config.api_key, project=self.project, context=config.context)
 
         # All violations found from the linting output
         self._all_violations = {}
