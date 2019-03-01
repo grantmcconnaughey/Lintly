@@ -1,8 +1,12 @@
 import pytest
-from unittest.mock import Mock
 
 from lintly import builds
 from lintly.config import Config
+
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 
 
 @pytest.fixture(
