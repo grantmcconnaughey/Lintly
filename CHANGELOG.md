@@ -1,5 +1,11 @@
 # Lintly Changelog
 
+## 0.3.0 (March 2, 2019)
+
+* Support for [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
+* Support for overriding the default PR status context using `--context`
+* Change: Default PR status contexts have changed from "Lintly" to "Lintly/{format}"
+
 ## 0.2.0 (November 21, 2018)
 
 * Support for [Black](https://black.readthedocs.io/en/stable/)

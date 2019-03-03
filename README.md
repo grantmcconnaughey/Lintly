@@ -54,6 +54,11 @@ Now you will see linting errors in your Pull Requests! Nifty!
     $ stylelint . | lintly --format=stylelint
     ```
 
+- [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
+    ```
+    $ cfn-lint template.yaml | lintly --format=cfn-lint
+    ```
+
 Additional linters can be added by modifying the `lintly/parsers.py` module.
 
 ## Configuration

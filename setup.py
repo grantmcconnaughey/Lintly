@@ -24,9 +24,9 @@ def read(*parts):
 
 setup(
     name='lintly',
-    version='0.2.0',
+    version='0.3.0',
     url='https://github.com/grantmcconnaughey/lintly',
-    license='BSD',
+    license='MIT',
     author='Grant McConnaughey',
     author_email='grantmcconnaughey@gmail.com',
     description='Slurp up linter output and send it to a GitHub PR review.',
