@@ -70,15 +70,6 @@ class LineRegexParser(BaseLintParser):
         return violations
 
 
-class LineRegexParserFactory(object):
-
-    def __init__(self, regex):
-        self.regex = regex
-
-    def __call__(self):
-        return LineRegexParser()
-
-
 class PylintJSONParser(BaseLintParser):
     """
     Pylint JSON format:
