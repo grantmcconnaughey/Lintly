@@ -50,6 +50,8 @@ logger = logging.getLogger(__name__)
 @click.option('--log',
               is_flag=True,
               help='Send Lintly debug logs to the console.')
+@click.option('--exit-zero/--no-exit-zero', default=False,
+              help="Whether Lintly should exit with error code indicating amount of violations or not")
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
     configure_logging(log_all=options.get('log'))
@@ -69,8 +71,11 @@ def main(**options):
         logger.info('Not a PR. Lintly is exiting.')
         sys.exit(0)
 
+    exit_code = 0
     # Exit with the number of files that have violations
-    sys.exit(len(build.violations))
+    if not options['exit_zero']:
+        exit_code = len(build.violations)
+    sys.exit(exit_code)
 
 
 def configure_logging(log_all=False):

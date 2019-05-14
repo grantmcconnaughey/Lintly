@@ -113,6 +113,24 @@ class CodeBuild(object):
         return git.head()
 
 
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
+# Note: variables with '.' in the name will have dot replaced with underscore
+# in actual environment
+class AzureDevOps(object):
+
+    @property
+    def pr(self):
+        return os.environ.get('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', None)
+
+    @property
+    def repo(self):
+        return os.environ['BUILD_REPOSITORY_ID']
+
+    @property
+    def commit_sha(self):
+        return os.environ['BUILD_SOURCEVERSION']
+
+
 def find_ci_provider():
     ci_providers = [
         ('TRAVIS', Travis),
@@ -121,6 +139,7 @@ def find_ci_provider():
         ('SHIPPABLE', Shippable),
         ('SEMAPHORE', Semaphore),
         ('CODEBUILD_BUILD_ID', CodeBuild),
+        ('AZURE_HTTP_USER_AGENT', AzureDevOps),
     ]
 
     for ci_env_var, ci_cls in ci_providers:

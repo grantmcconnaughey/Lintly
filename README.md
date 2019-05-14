@@ -116,3 +116,4 @@ stages:
 - Support for config file
 - Auto-detect linters
 - GitLab support
+- Azure Devops
