@@ -131,6 +131,22 @@ class AzureDevOps(object):
         return os.environ['BUILD_SOURCEVERSION']
 
 
+# https://docs.tea-ci.org/usage/variables/
+class Drone(object):
+
+    @property
+    def pr(self):
+        return os.environ.get('DRONE_PULL_REQUEST', None)
+
+    @property
+    def repo(self):
+        return os.environ['DRONE_REPO']
+
+    @property
+    def commit_sha(self):
+        return os.environ['DRONE_COMMIT']
+
+
 def find_ci_provider():
     ci_providers = [
         ('TRAVIS', Travis),
@@ -140,6 +156,7 @@ def find_ci_provider():
         ('SEMAPHORE', Semaphore),
         ('CODEBUILD_BUILD_ID', CodeBuild),
         ('AZURE_HTTP_USER_AGENT', AzureDevOps),
+        ('DRONE', Drone),
     ]
 
     for ci_env_var, ci_cls in ci_providers:

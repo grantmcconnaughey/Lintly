@@ -1,5 +1,11 @@
 # Lintly Changelog
 
+## 0.4.0 (December 20, 2019)
+
+* Add support for Drone CI
+* Add support for Azure DevOps
+* Add Windows compatibility
+
 ## 0.3.0 (March 2, 2019)
 
 * Support for [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
