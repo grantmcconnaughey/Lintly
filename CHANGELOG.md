@@ -2,6 +2,7 @@
 
 ## 0.4.0 (December 20, 2019)
 
+* Add support for GitHub Actions
 * Add support for Drone CI
 * Add support for Azure DevOps
 * Add Windows compatibility

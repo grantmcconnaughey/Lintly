@@ -147,6 +147,27 @@ class Drone(object):
         return os.environ['DRONE_COMMIT']
 
 
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables
+class GitHubActions(object):
+
+    @property
+    def pr(self):
+        ref = os.environ.get('GITHUB_REF')
+        if ref:
+            # On PRs, GITHUB_REF takes the format refs/pull/:prNumber/merge
+            return ref.split('/')[2]
+        else:
+            return None
+
+    @property
+    def repo(self):
+        return os.environ['GITHUB_REPOSITORY']
+
+    @property
+    def commit_sha(self):
+        return os.environ['GITHUB_SHA']
+
+
 def find_ci_provider():
     ci_providers = [
         ('TRAVIS', Travis),
@@ -157,6 +178,7 @@ def find_ci_provider():
         ('CODEBUILD_BUILD_ID', CodeBuild),
         ('AZURE_HTTP_USER_AGENT', AzureDevOps),
         ('DRONE', Drone),
+        ('GITHUB_ACTIONS', GitHubActions),
     ]
 
     for ci_env_var, ci_cls in ci_providers:
