@@ -72,9 +72,9 @@ At a minimum Lintly needs to know the following information to determine how to 
         - `repo` so that Lintly can create pull request reviews on private repos.
 - **GitHub repository** (`--repo` or `LINTLY_REPO` env var)
     - This is your repository in the format `grantmcconnaughey/lintly`.
-    > Note: Some Continuous Integration platforms will provide this value automatically.
+    > Note: Most Continuous Integration platforms will provide this value automatically.
 - **Pull Request number** (`--pr` or `LINTLY_PR` env var)
-    > Note: Some Continuous Integration platforms will provide this value automatically.
+    > Note: Most Continuous Integration platforms will provide this value automatically.
 
 These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI. A list of all configuration values can be viewed by running `lintly --help`.
 
@@ -84,10 +84,13 @@ Lintly works out of the box with the following Continuous Integration platforms:
 
 - [Travis CI](#travis-ci)
 - Circle CI
+- GitHub Actions
+- Drone CI
 - AppVeyor
 - Shippable
 - Semaphore
-- CodeBuild
+- AWS CodeBuild
+- Azure DevOps
 
 When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be detected automatically.
 
@@ -116,4 +119,3 @@ stages:
 - Support for config file
 - Auto-detect linters
 - GitLab support
-- Azure Devops

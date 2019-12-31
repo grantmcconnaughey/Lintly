@@ -1,6 +1,6 @@
 # Lintly Changelog
 
-## 0.4.0 (December 20, 2019)
+## 0.4.0 (December 31, 2019)
 
 * Add support for GitHub Actions
 * Add support for Drone CI
