@@ -6,22 +6,15 @@ python:
   - 3.6
   - 3.7
   - 3.8
+install:
+  - pip install -e .
+  - pip install -r requirements.txt
 
 jobs:
   include:
     - stage: lint
       script: flake8 | lintly --log
-      install:
-        - pip install -e .
-        - pip install -r requirements.txt
     - stage: test
       script: coverage run -m pytest
-      install:
-        - pip install -e .
-        - pip install -r requirements.txt
       after_success:
         - codecov
-
-stages:
-  - lint
-  - test
