@@ -11,7 +11,7 @@ class Config(object):
 
     def as_dict(self):
         return {
-            'pr': self.pr,
+            'pr': self.pr ,
             'repo': self.repo,
             'commit_sha': self.commit_sha,
             'api_key': REDACTED,
