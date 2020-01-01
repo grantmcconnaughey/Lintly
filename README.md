@@ -20,9 +20,15 @@ Finally, pipe the output of your linter to the `lintly` script:
 
     $ flake8 | lintly
 
-Now you will see linting errors in your Pull Requests! Nifty!
+Now you will see a review with linting errors...
 
-![Lintly used on a pull request](./example.png)
+![Lintly review on a pull request](./example_review.png)
+
+...and a commit check...
+
+![Lintly commit check on a pull request](./example_checks.png)
+
+...on your pull requests! Nifty! 🎉
 
 ## Supported Git Services
 
