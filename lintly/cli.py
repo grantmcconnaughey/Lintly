@@ -5,7 +5,6 @@ import sys
 import click
 
 from .builds import LintlyBuild
-from .ci import find_ci_provider
 from .config import Config
 from .constants import FAIL_ON_ANY, FAIL_ON_NEW
 from .exceptions import NotPullRequestException
@@ -35,10 +34,6 @@ logger = logging.getLogger(__name__)
               help='The linting output format Lintly should expect to receive')
 @click.option('--context',
               help='Override the commit status context')
-# @click.option('--site-url',
-#               envvar='LINTLY_SITE_URL',
-#               default='github.com',
-#               help='The GitHub URL to use. Defaults to github.com. Override this if you use GitHub Enterprise.')
 @click.option('--fail-on',
               envvar='LINTLY_FAIL_ON',
               type=click.Choice([FAIL_ON_ANY, FAIL_ON_NEW]),
@@ -51,7 +46,7 @@ logger = logging.getLogger(__name__)
               is_flag=True,
               help='Send Lintly debug logs to the console.')
 @click.option('--exit-zero/--no-exit-zero', default=False,
-              help="Whether Lintly should exit with error code indicating amount of violations or not")
+              help='Whether Lintly should exit with error code indicating amount of violations or not')
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
     configure_logging(log_all=options.get('log'))
@@ -61,8 +56,7 @@ def main(**options):
 
     click.echo(stdin_text)
 
-    ci = find_ci_provider()
-    config = Config(options, ci=ci)
+    config = Config(options)
 
     build = LintlyBuild(config, stdin_text)
     try:

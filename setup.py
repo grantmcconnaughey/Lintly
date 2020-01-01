@@ -6,6 +6,7 @@ import os
 from setuptools import find_packages, setup
 
 dependencies = [
+    'ci-py',
     'cached-property<2.0',
     'click<7.0',
     'jinja2<3.0',

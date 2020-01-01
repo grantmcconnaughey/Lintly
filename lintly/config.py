@@ -1,3 +1,4 @@
+import ci
 
 REDACTED = '********'
 
@@ -5,9 +6,8 @@ REDACTED = '********'
 class Config(object):
     """A Config object that knows how to return configuration from the CLI or Continuous Integration services"""
 
-    def __init__(self, cli_config, ci=None):
+    def __init__(self, cli_config):
         self.cli_config = cli_config
-        self.ci = ci
 
     def as_dict(self):
         return {
@@ -22,15 +22,15 @@ class Config(object):
 
     @property
     def pr(self):
-        return self.cli_config['pr'] or getattr(self.ci, 'pr')
+        return self.cli_config['pr'] or ci.pr()
 
     @property
     def repo(self):
-        return self.cli_config['repo'] or getattr(self.ci, 'repo')
+        return self.cli_config['repo'] or ci.repo()
 
     @property
     def commit_sha(self):
-        return self.cli_config['commit_sha'] or getattr(self.ci, 'commit_sha')
+        return self.cli_config['commit_sha'] or ci.commit_sha()
 
     @property
     def context(self):
