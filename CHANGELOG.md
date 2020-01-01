@@ -1,5 +1,9 @@
 # Lintly Changelog
 
+## 0.4.1 (Not released)
+
+* Now using [ci.py](https://github.com/grantmcconnaughey/ci.py) for CI service detection.
+
 ## 0.4.0 (December 31, 2019)
 
 * Add support for GitHub Actions

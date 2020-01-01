@@ -80,7 +80,7 @@ These configuration values can be provided to Lintly via environment variables o
 
 ## Supported Continuous Integration platforms
 
-Lintly works out of the box with all of the CI platforms supported by [ci.py](https://github.com/grantmcconnaughey/ci.py#ci-services).
+Lintly works out of the box with all of the CI platforms supported by [ci.py](https://github.com/grantmcconnaughey/ci.py#ci-services). To add support for new CI platforms create a PR to the ci.py repo.
 
 When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be detected automatically.
 
