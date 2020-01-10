@@ -65,6 +65,11 @@ Now you will see a review with linting errors...
     $ cfn-lint template.yaml | lintly --format=cfn-lint
     ```
 
+- [cfn-nag](https://github.com/stelligent/cfn_nag)
+    ```
+    $ cfn_nag_scan --input-path cloudformation-template.yaml --output-format=json | lintly --format=cfn-nag
+    ```
+
 Additional linters can be added by modifying the `lintly/parsers.py` module.
 
 ## Configuration
