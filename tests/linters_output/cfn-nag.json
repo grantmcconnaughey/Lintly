@@ -1,0 +1,62 @@
+[
+  {
+    "filename": "cloudformation/perfect-stack.yaml",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+
+      ]
+    }
+  },
+  {
+    "filename": "cloudformation/problem-stack.yaml",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "F3",
+          "type": "FAIL",
+          "message": "IAM role should not allow * action on its permissions policy",
+          "logical_resource_ids": [
+            "MyIamRole",
+            "OtherIamRole",
+          ],
+          "line_numbers": [
+            24,
+            150
+          ]
+        },
+        {
+          "id": "W35",
+          "type": "WARN",
+          "message": "S3 Bucket should have access logging configured",
+          "logical_resource_ids": [
+            "MyS3Bucket"
+          ],
+          "line_numbers": [
+            50
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "cloudformation/warning-stack.yaml",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W42",
+          "type": "WARN",
+          "message": "Security Groups ingress with an ipProtocol of -1 found ",
+          "logical_resource_ids": [
+            "MySecurityGroup"
+          ],
+          "line_numbers": [
+            320
+          ]
+        }
+      ]
+    }
+  }
+]
