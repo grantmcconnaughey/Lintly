@@ -230,6 +230,31 @@ class CfnLintParser(BaseLintParser):
         return violations
 
 
+class CfnNagParser(BaseLintParser):
+
+    def parse_violations(self, output):
+
+        file_list = json.loads(output)
+        violations = {}
+
+        for file in file_list:
+            file_violations = []
+            for violation_info in file["file_results"]["violations"]:
+                for line_number in violation_info["line_numbers"]:
+                    violation = Violation(
+                        line=line_number,
+                        column=0,
+                        code=violation_info["id"],
+                        message=violation_info["message"]
+                    )
+
+                    file_violations.append(violation)
+
+            violations[file["filename"]] = file_violations
+
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -264,4 +289,7 @@ PARSERS = {
 
     # cfn-lint default formatter
     'cfn-lint': CfnLintParser(),
+
+    # cfn-nag JSON output
+    'cfn-nag': CfnNagParser(),
 }
