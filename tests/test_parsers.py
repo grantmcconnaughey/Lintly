@@ -180,3 +180,23 @@ class CfnLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
              'message': 'Ref PrincipalOrgID not found as a resource or parameter'},
         ]
     }
+
+
+class CfnNagParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['cfn-nag']
+    linter_output_file_name = 'cfn-nag.json'
+
+    expected_violations = {
+        "cloudformation/problem-stack.yaml": [
+            {'line': 24, 'column': 0, 'code': 'F3',
+             'message': 'IAM role should not allow * action on its permissions policy'},
+            {'line': 150, 'column': 0, 'code': 'F3', 'message':
+             'IAM role should not allow * action on its permissions policy'},
+            {'line': 50, 'column': 0, 'code': 'W35',
+             'message': 'S3 Bucket should have access logging configured'}
+        ],
+        "cloudformation/warning-stack.yaml": [
+            {'line': 320, 'column': 0, 'code': 'W42',
+             'message': 'Security Groups ingress with an ipProtocol of -1 found '},
+        ]
+    }
