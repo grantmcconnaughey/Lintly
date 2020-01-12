@@ -24,7 +24,7 @@ def read(*parts):
 
 setup(
     name='lintly',
-    version='0.4.0',
+    version='0.4.1',
     url='https://github.com/grantmcconnaughey/lintly',
     license='MIT',
     author='Grant McConnaughey',
@@ -48,7 +48,7 @@ setup(
         # 'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: POSIX',
         'Operating System :: MacOS',
         'Operating System :: Unix',
@@ -61,6 +61,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Quality Assurance',
     ]
