@@ -1,9 +1,10 @@
 # Lintly Changelog
 
-## 0.4.1 (Not released)
+## 0.4.1 (January 12, 2020)
 
-* Add support for Python 3.7 and 3.8.
-* Now using [ci.py](https://github.com/grantmcconnaughey/ci.py) for CI service detection.
+* Add support for Python 3.7 and 3.8
+* Add support for [cfn-nag](https://github.com/stelligent/cfn_nag)
+* Now using [ci.py](https://github.com/grantmcconnaughey/ci.py) for CI service detection
 
 ## 0.4.0 (December 31, 2019)
 

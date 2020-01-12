@@ -187,6 +187,7 @@ class CfnNagParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     linter_output_file_name = 'cfn-nag.json'
 
     expected_violations = {
+        "cloudformation/perfect-stack.yaml": [],
         "cloudformation/problem-stack.yaml": [
             {'line': 24, 'column': 0, 'code': 'F3',
              'message': 'IAM role should not allow * action on its permissions policy'},

@@ -19,7 +19,7 @@
           "message": "IAM role should not allow * action on its permissions policy",
           "logical_resource_ids": [
             "MyIamRole",
-            "OtherIamRole",
+            "OtherIamRole"
           ],
           "line_numbers": [
             24,
