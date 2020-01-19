@@ -33,3 +33,8 @@ def build_pr_review_line_comment(violation):
     """
     template = env.get_template('pr_review_line_comment.txt')
     return template.render(violation=violation, LINTLY_IDENTIFIER=LINTLY_IDENTIFIER)
+
+
+def build_pr_review_body(violations):
+    template = env.get_template('pr_review_body.txt')
+    return template.render(violations=violations, LINTLY_IDENTIFIER=LINTLY_IDENTIFIER)

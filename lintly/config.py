@@ -18,6 +18,7 @@ class Config(object):
             'format': self.format,
             'fail_on': self.fail_on,
             'post_status': self.post_status,
+            'request_changes': self.request_changes,
         }
 
     @property
@@ -51,3 +52,7 @@ class Config(object):
     @property
     def post_status(self):
         return self.cli_config['post_status']
+
+    @property
+    def request_changes(self):
+        return self.cli_config['request_changes']

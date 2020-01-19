@@ -39,7 +39,7 @@ class BaseGitBackend(object):
         """
         raise NotImplementedError
 
-    def create_pull_request_review(self, pr, patch, all_violations):
+    def create_pull_request_review(self, pr, patch, all_violations, request_changes):
         """
         Creates a pull request review for the given build.
         """

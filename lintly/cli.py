@@ -42,6 +42,9 @@ logger = logging.getLogger(__name__)
 @click.option('--post-status/--no-post-status',
               default=True,
               help='Used to determine if Lintly should post a PR status to GitHub.')
+@click.option('--request-changes/--no-request-changes',
+              default=True,
+              help='Whether Lintly should post violations as a PR request for changes instead of a simple comment')
 @click.option('--log',
               is_flag=True,
               help='Send Lintly debug logs to the console.')
