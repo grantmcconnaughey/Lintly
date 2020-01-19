@@ -27,7 +27,7 @@ class BaseGitBackend(object):
         """
         raise NotImplementedError
 
-    def delete_pull_request_comments(self, pr, bot):
+    def delete_pull_request_comments(self, pr):
         """
         Deletes all pull request comments for the bot account.
         """
