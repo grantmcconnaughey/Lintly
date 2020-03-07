@@ -1,6 +1,6 @@
 {% if violations|length %}
 
-Lintly has detected code quality issues in this pull request.
+[Lintly](https://github.com/grantmcconnaughey/Lintly) has detected code quality issues in this pull request.
 
 {% else %}
 

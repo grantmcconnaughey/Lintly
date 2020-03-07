@@ -1,4 +1,4 @@
-### Lintly
+### [Lintly](https://github.com/grantmcconnaughey/Lintly)
 
 {% if len(violations) %}
 The following code quality issues were introduced:
