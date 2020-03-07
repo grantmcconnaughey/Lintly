@@ -20,6 +20,8 @@ jobs:
         pip install -r requirements.txt
     - name: Lint with flake8
       run: flake8 | lintly --log
+      with:
+        LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
     - name: Test with pytest
       run: coverage run -m pytest
     - name: Send coverage results to CodeCov
