@@ -11,6 +11,8 @@ class UnauthorizedError(GitClientError):
     pass
 
 
+
+
 class NotFoundError(GitClientError):
     pass
 
