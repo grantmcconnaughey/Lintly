@@ -17,39 +17,42 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.option('--api-key',
               envvar='LINTLY_API_KEY',
-              help='The GitHub API key to use for commenting on PRs')
+              help='The GitHub API key to use for commenting on PRs (required)')
 @click.option('--repo',
               envvar='LINTLY_REPO',
               help='The GitHub repo name in the format {owner}/{repo}')
 @click.option('--pr',
               envvar='LINTLY_PR',
-              help='The pull request number for this build')
+              help='The pull request number for this build (required)')
 @click.option('--commit-sha',
               envvar='LINTLY_COMMIT_SHA',
-              help='The commit Lintly is running against.')
+              help='The commit Lintly is running against (required)')
 @click.option('--format',
               envvar='LINTLY_FORMAT',
               type=click.Choice(list(PARSERS.keys())),
               default='unix',
-              help='The linting output format Lintly should expect to receive')
+              help='The linting output format Lintly should expect to receive. Default "unix"')
 @click.option('--context',
               help='Override the commit status context')
 @click.option('--fail-on',
               envvar='LINTLY_FAIL_ON',
               type=click.Choice([FAIL_ON_ANY, FAIL_ON_NEW]),
               default=FAIL_ON_ANY,
-              help='Whether Lintly should fail if any violations are detected or only if new violations are detected.')
+              help=('Whether Lintly should fail if any violations are detected '
+                    'or only if new violations are detected. Default "any"'))
 @click.option('--post-status/--no-post-status',
               default=True,
-              help='Used to determine if Lintly should post a PR status to GitHub.')
+              help='Used to determine if Lintly should post a PR status to GitHub. Default true')
 @click.option('--request-changes/--no-request-changes',
               default=True,
-              help='Whether Lintly should post violations as a PR request for changes instead of a simple comment')
+              help=('Whether Lintly should post violations as a PR request for '
+                    'changes instead of a simple comment. Default true'))
 @click.option('--log',
               is_flag=True,
-              help='Send Lintly debug logs to the console.')
+              help='Send Lintly debug logs to the console. Default false')
 @click.option('--exit-zero/--no-exit-zero', default=False,
-              help='Whether Lintly should exit with error code indicating amount of violations or not')
+              help=('Whether Lintly should exit with error code indicating '
+                    'amount of violations or not. Default false'))
 def main(**options):
     """Slurp up linter output and send it to a GitHub PR review."""
     configure_logging(log_all=options.get('log'))

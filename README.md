@@ -30,12 +30,6 @@ Now you will see a review with linting errors...
 
 ...on your pull requests! Nifty! 🎉
 
-## Supported Git Services
-
-- GitHub
-
-> Support for GitLab and Bitbucket is planned.
-
 ## Supported Linters
 
 - [flake8](http://flake8.pycqa.org/en/latest/)
@@ -87,7 +81,47 @@ At a minimum Lintly needs to know the following information to determine how to 
 - **Pull Request number** (`--pr` or `LINTLY_PR` env var)
     > Note: Most Continuous Integration platforms will provide this value automatically.
 
-These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI. A list of all configuration values can be viewed by running `lintly --help`.
+These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI.
+
+### Options
+
+A list of all configuration values can be viewed by running `lintly --help`.
+
+```
+Usage: lintly [OPTIONS]
+
+  Slurp up linter output and send it to a GitHub PR review.
+
+Options:
+  --api-key TEXT                  The GitHub API key to use for commenting on
+                                  PRs (required)
+  --repo TEXT                     The GitHub repo name in the format
+                                  {owner}/{repo}
+  --pr TEXT                       The pull request number for this build
+                                  (required)
+  --commit-sha TEXT               The commit Lintly is running against
+                                  (required)
+  --format [unix|flake8|pylint-json|eslint|eslint-unix|stylelint|black|cfn-lint|cfn-nag]
+                                  The linting output format Lintly should
+                                  expect to receive. Default "unix"
+  --context TEXT                  Override the commit status context
+  --fail-on [any|new]             Whether Lintly should fail if any violations
+                                  are detected or only if new violations are
+                                  detected. Default "any"
+  --post-status / --no-post-status
+                                  Used to determine if Lintly should post a PR
+                                  status to GitHub. Default true
+  --request-changes / --no-request-changes
+                                  Whether Lintly should post violations as a
+                                  PR request for changes instead of a simple
+                                  comment. Default true
+  --log                           Send Lintly debug logs to the console.
+                                  Default false
+  --exit-zero / --no-exit-zero    Whether Lintly should exit with error code
+                                  indicating amount of violations or not.
+                                  Default false
+  --help                          Show this message and exit.
+```
 
 ## Supported Continuous Integration platforms
 
@@ -111,12 +145,3 @@ jobs:
 stages:
   - lint
 ```
-
-## To-Do
-
-- Add support for GitHub Enterprise custom GitHub URLs
-- Configuration to post either a PR comment or PR review
-- Link to Build URL from commit status
-- Support for config file
-- Auto-detect linters
-- GitLab support
