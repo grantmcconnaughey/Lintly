@@ -1,4 +1,4 @@
-name: Lint Lintly
+name: Lint and Test Lintly
 
 on: [push]
 
@@ -20,7 +20,7 @@ jobs:
         pip install -r requirements.txt
     - name: Lint with flake8
       run: flake8 | lintly --log
-      with:
+      env:
         LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
     - name: Test with pytest
       run: coverage run -m pytest
