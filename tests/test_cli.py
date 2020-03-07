@@ -3,6 +3,10 @@ from click.testing import CliRunner
 from lintly import cli
 
 
+
+
+
+
 @pytest.fixture
 def runner():
     return CliRunner()
