@@ -91,6 +91,8 @@ class GitHubAPIClient:
         headers = self.get_headers()
         headers.update(extra_headers)
 
+        logger.debug('Sending a {} request to {}'.format(method, url))
+
         response = getattr(requests, method.lower())(full_url, data=data, headers=headers)
         if 200 <= response.status_code < 300:
             if 'application/json' in response.headers['Content-Type']:
