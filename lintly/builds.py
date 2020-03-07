@@ -1,7 +1,14 @@
 import collections
 import logging
 
-from .constants import FAIL_ON_ANY
+from .constants import (
+    FAIL_ON_ANY,
+    ACTION_REVIEW_APPROVE,
+    ACTION_REVIEW_COMMENT,
+    ACTION_REVIEW_DO_NOTHING,
+    ACTION_REVIEW_REQUEST_CHANGES,
+)
+
 from .exceptions import NotPullRequestException
 from .backends.github import GitHubBackend
 from .backends.errors import GitClientError
@@ -70,6 +77,7 @@ class LintlyBuild(object):
         self._diff_violations = self.find_diff_violations(patch)
         logger.info('Lintly found diff violations in {} files'.format(len(self._diff_violations)))
 
+        self.cleanup_previous_comments()
         self.post_pr_comment(patch)
         self.post_commit_status()
 
@@ -78,6 +86,13 @@ class LintlyBuild(object):
 
     def get_pr_patch(self, diff):
         return Patch(diff)
+
+    def cleanup_previous_comments(self):
+        logger.info('Deleting old PR review comments')
+        self.git_client.delete_pull_request_review_comments(self.config.pr)
+
+        logger.info('Deleting old PR comment')
+        self.git_client.delete_pull_request_comments(self.config.pr)
 
     def find_diff_violations(self, patch):
         """
@@ -96,39 +111,58 @@ class LintlyBuild(object):
 
         return violations
 
+    def _get_pr_review_action(self):
+        """
+        Maps the expected action to be taken on this PR for the review step
+        """
+        action = ACTION_REVIEW_DO_NOTHING
+
+        if self.has_violations:
+            if self.config.request_changes:
+                action = ACTION_REVIEW_REQUEST_CHANGES
+            else:
+                action = ACTION_REVIEW_COMMENT
+        elif self.config.request_changes:
+            action = ACTION_REVIEW_APPROVE
+
+        return action
+
     def post_pr_comment(self, patch):
         """
         Posts a comment to the GitHub PR if the diff results have issues.
         """
-        if self.has_violations:
-            post_pr_comment = True
+        pr_review_action = self._get_pr_review_action()
+        if pr_review_action == ACTION_REVIEW_DO_NOTHING:
+            logger.info('No PR review action required on this Pull Request')
+            return
 
-            # Attempt to post a PR review. If posting the PR review fails because the bot account
-            # does not have permission to review the PR then simply revert to posting a regular PR
-            # comment.
-            try:
-                logger.info('Deleting old PR review comments')
-                self.git_client.delete_pull_request_review_comments(self.config.pr)
+        # Attempt to post a PR review. If posting the PR review fails because the bot account
+        # does not have permission to review the PR then simply revert to posting a regular PR
+        # comment.
+        post_pr_comment = True
 
-                logger.info('Creating PR review')
-                self.git_client.create_pull_request_review(self.config.pr, patch, self._diff_violations)
-                post_pr_comment = False
-            except GitClientError as e:
-                # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
-                # so that we don't have to check for a specific message in the exception
-                if 'Viewer does not have permission to review this pull request' in str(e):
-                    logger.warning("Could not post PR review (the account didn't have permission)")
-                    pass
-                else:
-                    raise
+        try:
+            logger.info('Creating PR review')
+            self.git_client.create_pull_request_review(
+                self.config.pr,
+                patch,
+                self._diff_violations,
+                pr_review_action
+            )
+            post_pr_comment = False
+        except GitClientError as e:
+            # TODO: Make `create_pull_request_review` raise an `UnauthorizedError`
+            # so that we don't have to check for a specific message in the exception
+            if 'Viewer does not have permission to review this pull request' in str(e):
+                logger.warning("Could not post PR review (the account didn't have permission)")
+                pass
+            else:
+                raise
 
-            if post_pr_comment:
-                logger.info('Deleting old PR comment')
-                self.git_client.delete_pull_request_comments(self.config.pr)
-
-                logger.info('Creating PR comment')
-                comment = build_pr_comment(self.config, self.violations)
-                self.git_client.create_pull_request_comment(self.config.pr, comment)
+        if post_pr_comment and pr_review_action in (ACTION_REVIEW_COMMENT, ACTION_REVIEW_REQUEST_CHANGES):
+            logger.info('Creating PR comment')
+            comment = build_pr_comment(self.config, self.violations)
+            self.git_client.create_pull_request_comment(self.config.pr, comment)
 
     def post_commit_status(self):
         """

@@ -1,5 +1,6 @@
 ### Lintly
 
+{% if len(violations) %}
 The following code quality issues were introduced:
 
 {% for file_path, file_violations in violations.items() %}
@@ -11,5 +12,10 @@ The following code quality issues were introduced:
 {% endfor %}
 
 {% endfor %}
+
+{% else %}
+    No linting violations have been found in this PR.
+{% endif %}
+
 
 {{ LINTLY_IDENTIFIER }}

@@ -8,7 +8,8 @@ import requests
 from github import GithubException, UnknownObjectException, Github
 
 from lintly.constants import LINTLY_IDENTIFIER
-from lintly.formatters import build_pr_review_line_comment
+from lintly.formatters import build_pr_review_line_comment, build_pr_review_body
+from lintly.constants import ACTION_REVIEW_REQUEST_CHANGES, ACTION_REVIEW_COMMENT, ACTION_REVIEW_APPROVE
 
 from .base import BaseGitBackend
 from .errors import NotFoundError, GitClientError
@@ -133,7 +134,7 @@ class GitHubBackend(BaseGitBackend):
         )
 
     @translate_github_exception
-    def delete_pull_request_comments(self, pr, bot):
+    def delete_pull_request_comments(self, pr):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_issue(int(pr))
         for comment in pull_request.get_comments():
@@ -153,7 +154,15 @@ class GitHubBackend(BaseGitBackend):
 
         return diff.decode('utf-8')
 
-    def create_pull_request_review(self, pr, patch, all_violations):
+    def _get_event(self, review_action):
+        if review_action == ACTION_REVIEW_COMMENT:
+            return 'COMMENT'
+        elif review_action == ACTION_REVIEW_REQUEST_CHANGES:
+            return 'REQUEST_CHANGES'
+        elif review_action == ACTION_REVIEW_APPROVE:
+            return 'APPROVE'
+
+    def create_pull_request_review(self, pr, patch, all_violations, pr_review_action):
         comments = []
         for file_path in all_violations:
             violations = all_violations[file_path]
@@ -170,8 +179,8 @@ class GitHubBackend(BaseGitBackend):
 
         client = GitHubAPIClient(token=self.token)
         data = {
-            'body': 'Lintly has detected code quality issues in this pull request.',
-            'event': 'COMMENT',
+            'body': build_pr_review_body(all_violations),
+            'event': self._get_event(pr_review_action),
             'comments': comments,
         }
 

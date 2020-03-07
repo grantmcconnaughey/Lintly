@@ -131,7 +131,7 @@ class GitLabBackend(BaseGitBackend):
         mr.notes.create({'body': comment})
 
     @translate_gitlab_exception
-    def delete_pull_request_comments(self, pr, bot):
+    def delete_pull_request_comments(self, pr):
         project = self.client.projects.get(self.project.full_name)
         mr = project.mergerequests.list(iid=pr)[0]
         client = GitLabAPIClient(self.token, self.user, self.project)
@@ -143,7 +143,7 @@ class GitLabBackend(BaseGitBackend):
                 client.delete(url)
 
     @translate_gitlab_exception
-    def create_pull_request_review(self, pr, patch, all_violations):
+    def create_pull_request_review(self, pr, patch, all_violations, pr_review_action):
         raise NotSupportedError()
 
     @translate_gitlab_exception
