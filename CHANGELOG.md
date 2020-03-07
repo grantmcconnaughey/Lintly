@@ -1,5 +1,11 @@
 # Lintly Changelog
 
+## 0.5.0 (Not released)
+
+* Add support for posting PR reviews that approve or request changes.
+* Update PR review comment to link to Lintly repo.
+* Update license year.
+
 ## 0.4.1 (January 12, 2020)
 
 * Add support for Python 3.7 and 3.8
