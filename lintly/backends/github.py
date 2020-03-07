@@ -24,7 +24,11 @@ DEFAULT_PER_PAGE = 100
 GITHUB_API_HEADER = 'application/vnd.github.v3+json'
 GITHUB_API_PR_REVIEW_HEADER = 'application/vnd.github.black-cat-preview+json'
 GITHUB_DIFF_HEADER = 'application/vnd.github.3.diff'
+GITHUB_CHECKS_HEADER = 'application/vnd.github.antiope-preview+json'
 GITHUB_USER_AGENT = 'Lintly'
+
+ANNOTATION_LEVEL_WARNING = 'warning'
+ANNOTATION_LEVEL_FAILURE = 'failure'
 
 
 def translate_github_exception(func):
@@ -73,6 +77,9 @@ class GitHubAPIClient:
 
     def put(self, url, data=None, headers=None):
         return self._do_request('put', url, json.dumps(data), headers)
+
+    def patch(self, url, data=None, headers=None):
+        return self._do_request('patch', url, json.dumps(data), headers)
 
     def _do_request(self, method, url, data=None, extra_headers=None):
         if data is None:
@@ -212,3 +219,32 @@ class GitHubBackend(BaseGitBackend):
             'context': self.context
         }
         client.post(url, data)
+
+    # https://developer.github.com/v3/checks/runs/#update-a-check-run
+    def update_check_run(self, check_run_id, patch, all_violations):
+        annotations = []
+        for file_path in all_violations:
+            violations = all_violations[file_path]
+
+            # https://developer.github.com/v3/pulls/comments/#input
+            for violation in violations:
+                patch_position = patch.get_patch_position(file_path, violation.line)
+                if patch_position is not None:
+                    annotations.append({
+                        'path': file_path,
+                        'start_line': violation.line,
+                        'end_line': violation.line,
+                        'message': build_pr_review_line_comment(violation)
+                    })
+
+        url = '/repos/{owner}/{repo_name}/check-runs/{check_run_id}'.format(
+            owner=self.project.owner_login, repo_name=self.project.name, check_run_id=check_run_id)
+
+        # PyGitHub does not support the Checks API
+        client = GitHubAPIClient(token=self.token)
+        data = {
+            'output': {
+                'annotations': annotations
+            }
+        }
+        client.patch(url, data, headers={'Accept': GITHUB_CHECKS_HEADER})

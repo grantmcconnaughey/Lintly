@@ -7,6 +7,7 @@ from .constants import (
     ACTION_REVIEW_COMMENT,
     ACTION_REVIEW_DO_NOTHING,
     ACTION_REVIEW_REQUEST_CHANGES,
+    ACTION_REVIEW_USE_CHECKS
 )
 
 from .exceptions import NotPullRequestException
@@ -78,7 +79,7 @@ class LintlyBuild(object):
         logger.info('Lintly found diff violations in {} files'.format(len(self._diff_violations)))
 
         self.cleanup_previous_comments()
-        self.post_pr_comment(patch)
+        self.submit_to_pr(patch)
         self.post_commit_status()
 
     def get_pr_diff(self):
@@ -117,30 +118,44 @@ class LintlyBuild(object):
         """
         action = ACTION_REVIEW_DO_NOTHING
 
-        if self.has_violations:
-            if self.config.request_changes:
-                action = ACTION_REVIEW_REQUEST_CHANGES
-            else:
-                action = ACTION_REVIEW_COMMENT
-        elif self.config.request_changes:
-            action = ACTION_REVIEW_APPROVE
+        if self.config.github_check_run_id:
+            action = ACTION_REVIEW_USE_CHECKS
+        else:
+            # Use PR reviews
+            if self.has_violations:
+                if self.config.request_changes:
+                    action = ACTION_REVIEW_REQUEST_CHANGES
+                else:
+                    action = ACTION_REVIEW_COMMENT
+            elif self.config.request_changes:
+                action = ACTION_REVIEW_APPROVE
 
         return action
 
-    def post_pr_comment(self, patch):
+    def submit_to_pr(self, patch):
         """
-        Posts a comment to the GitHub PR if the diff results have issues.
+        Submits violations to a PR. The submission may be a PR review (approve,
+        request changes, or comment) or it may be a updates to a Check Run.
         """
         pr_review_action = self._get_pr_review_action()
         if pr_review_action == ACTION_REVIEW_DO_NOTHING:
             logger.info('No PR review action required on this Pull Request')
             return
 
-        # Attempt to post a PR review. If posting the PR review fails because the bot account
-        # does not have permission to review the PR then simply revert to posting a regular PR
-        # comment.
-        post_pr_comment = True
+        if pr_review_action == ACTION_REVIEW_USE_CHECKS:
+            logger.info('Updating GitHub check run')
+            self.git_client.update_check_run(self.config.github_check_run_id, patch, self._diff_violations)
+        else:
+            self.submit_pr_review(patch, pr_review_action)
 
+    def submit_pr_review(self, patch, pr_review_action):
+        """
+        Attempts to post a PR review. If posting the PR review fails because
+        the bot account does not have permission to review the PR then
+        simply revert to posting a regular PR comment.
+        """
+
+        post_pr_comment = True
         try:
             logger.info('Creating PR review')
             self.git_client.create_pull_request_review(
