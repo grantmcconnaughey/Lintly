@@ -1,19 +1,16 @@
-name: Lint and Test Lintly
+name: Lint
 
 on: [pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.8
     - name: Install dependencies
       run: |
         pip install -e .
@@ -22,7 +19,3 @@ jobs:
       run: flake8 | lintly --log
       env:
         LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-    - name: Test with pytest
-      run: coverage run -m pytest
-    - name: Send coverage results to CodeCov
-      run: coverage run -m pytest
