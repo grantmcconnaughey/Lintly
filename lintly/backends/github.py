@@ -223,21 +223,19 @@ class GitHubBackend(BaseGitBackend):
         client.post(url, data)
 
     # https://developer.github.com/v3/checks/runs/#update-a-check-run
-    def update_check_run(self, check_run_id, patch, all_violations):
+    def update_check_run(self, check_run_id, all_violations):
         annotations = []
         for file_path in all_violations:
             violations = all_violations[file_path]
 
             # https://developer.github.com/v3/pulls/comments/#input
             for violation in violations:
-                patch_position = patch.get_patch_position(file_path, violation.line)
-                if patch_position is not None:
-                    annotations.append({
-                        'path': file_path,
-                        'start_line': violation.line,
-                        'end_line': violation.line,
-                        'message': build_pr_review_line_comment(violation)
-                    })
+                annotations.append({
+                    'path': file_path,
+                    'start_line': violation.line,
+                    'end_line': violation.line,
+                    'message': build_pr_review_line_comment(violation)
+                })
 
         url = '/repos/{owner}/{repo_name}/check-runs/{check_run_id}'.format(
             owner=self.project.owner_login, repo_name=self.project.name, check_run_id=check_run_id)

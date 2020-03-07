@@ -144,7 +144,7 @@ class LintlyBuild(object):
 
         if pr_review_action == ACTION_REVIEW_USE_CHECKS:
             logger.info('Updating GitHub check run')
-            self.git_client.update_check_run(self.config.github_check_run_id, patch, self._diff_violations)
+            self.git_client.update_check_run(self.config.github_check_run_id, self._diff_violations)
         else:
             self.submit_pr_review(patch, pr_review_action)
 
