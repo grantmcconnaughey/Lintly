@@ -8,8 +8,16 @@ import requests
 from github import GithubException, UnknownObjectException, Github
 
 from lintly.constants import LINTLY_IDENTIFIER
-from lintly.formatters import build_pr_review_line_comment, build_pr_review_body
-from lintly.constants import ACTION_REVIEW_REQUEST_CHANGES, ACTION_REVIEW_COMMENT, ACTION_REVIEW_APPROVE
+from lintly.formatters import (
+    build_pr_review_line_comment,
+    build_pr_review_body,
+    build_check_line_comment
+)
+from lintly.constants import (
+    ACTION_REVIEW_REQUEST_CHANGES,
+    ACTION_REVIEW_COMMENT,
+    ACTION_REVIEW_APPROVE
+)
 
 from .base import BaseGitBackend
 from .errors import NotFoundError, GitClientError
@@ -24,7 +32,11 @@ DEFAULT_PER_PAGE = 100
 GITHUB_API_HEADER = 'application/vnd.github.v3+json'
 GITHUB_API_PR_REVIEW_HEADER = 'application/vnd.github.black-cat-preview+json'
 GITHUB_DIFF_HEADER = 'application/vnd.github.3.diff'
+GITHUB_CHECKS_HEADER = 'application/vnd.github.antiope-preview+json'
 GITHUB_USER_AGENT = 'Lintly'
+
+ANNOTATION_LEVEL_WARNING = 'warning'
+ANNOTATION_LEVEL_FAILURE = 'failure'
 
 
 def translate_github_exception(func):
@@ -74,6 +86,9 @@ class GitHubAPIClient:
     def put(self, url, data=None, headers=None):
         return self._do_request('put', url, json.dumps(data), headers)
 
+    def patch(self, url, data=None, headers=None):
+        return self._do_request('patch', url, json.dumps(data), headers)
+
     def _do_request(self, method, url, data=None, extra_headers=None):
         if data is None:
             data = dict()
@@ -83,6 +98,8 @@ class GitHubAPIClient:
         full_url = self.base_url + url
         headers = self.get_headers()
         headers.update(extra_headers)
+
+        logger.debug('Sending a {} request to {}'.format(method, url))
 
         response = getattr(requests, method.lower())(full_url, data=data, headers=headers)
         if 200 <= response.status_code < 300:
@@ -212,3 +229,54 @@ class GitHubBackend(BaseGitBackend):
             'context': self.context
         }
         client.post(url, data)
+
+    def create_check_run(self, commit_sha, description, violations):
+        url = '/repos/{owner}/{repo_name}/check-runs'.format(
+            owner=self.project.owner_login, repo_name=self.project.name)
+        annotations = self._get_check_annotations(violations)
+
+        client = GitHubAPIClient(token=self.token)
+        data = {
+            'name': self.context,
+            'conclusion': 'success' if len(annotations) == 0 else 'failure',
+            'head_sha': commit_sha,
+            'output': {
+                'title': description,
+                'summary': description,
+                'annotations': annotations
+            }
+        }
+        response = client.post(url, data, headers={'Accept': GITHUB_CHECKS_HEADER})
+        return response.get('id')
+
+    # https://developer.github.com/v3/checks/runs/#update-a-check-run
+    def update_check_run(self, check_run_id, description, violations):
+        url = '/repos/{owner}/{repo_name}/check-runs/{check_run_id}'.format(
+            owner=self.project.owner_login, repo_name=self.project.name, check_run_id=check_run_id)
+
+        # PyGitHub does not support the Checks API
+        client = GitHubAPIClient(token=self.token)
+        data = {
+            'output': {
+                'title': description,
+                'summary': description,
+                'annotations': self._get_check_annotations(violations)
+            }
+        }
+        client.patch(url, data, headers={'Accept': GITHUB_CHECKS_HEADER})
+
+    def _get_check_annotations(self, violations):
+        annotations = []
+        for file_path in violations:
+            file_violations = violations[file_path]
+
+            # https://developer.github.com/v3/pulls/comments/#input
+            for violation in file_violations:
+                annotations.append({
+                    'annotation_level': 'warning',
+                    'path': file_path,
+                    'start_line': violation.line,
+                    'end_line': violation.line,
+                    'message': build_check_line_comment(violation)
+                })
+        return annotations

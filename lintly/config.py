@@ -1,4 +1,5 @@
 import ci
+import os
 
 REDACTED = '********'
 
@@ -19,6 +20,7 @@ class Config(object):
             'fail_on': self.fail_on,
             'post_status': self.post_status,
             'request_changes': self.request_changes,
+            'github_check_run_id': self.github_check_run_id,
         }
 
     @property
@@ -56,3 +58,11 @@ class Config(object):
     @property
     def request_changes(self):
         return self.cli_config['request_changes']
+
+    @property
+    def github_check_run_id(self):
+        """The Check Run ID from GitHub Actions.
+
+        https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
+        """
+        return os.environ.get('GITHUB_RUN_ID')
