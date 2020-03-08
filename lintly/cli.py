@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 @click.option('--format',
               envvar='LINTLY_FORMAT',
               type=click.Choice(list(PARSERS.keys())),
-              default='unix',
-              help='The linting output format Lintly should expect to receive. Default "unix"')
+              default='flake8',
+              help='The linting output format Lintly should expect to receive. Default "flake8"')
 @click.option('--context',
               help='Override the commit status context')
 @click.option('--fail-on',

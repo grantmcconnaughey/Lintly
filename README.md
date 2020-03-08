@@ -103,7 +103,7 @@ Options:
                                   (required)
   --format [unix|flake8|pylint-json|eslint|eslint-unix|stylelint|black|cfn-lint|cfn-nag]
                                   The linting output format Lintly should
-                                  expect to receive. Default "unix"
+                                  expect to receive. Default "flake8"
   --context TEXT                  Override the commit status context
   --fail-on [any|new]             Whether Lintly should fail if any violations
                                   are detected or only if new violations are
