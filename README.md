@@ -129,6 +129,32 @@ Lintly works out of the box with all of the CI platforms supported by [ci.py](ht
 
 When using these Continuous Integration platforms the repository, pull request number, and commit SHA will be detected automatically.
 
+### GitHub Actions example
+
+To use Lintly with GitHub Actions, create a file called `.github/workflows/lint.yaml` with the following contents:
+
+```yaml
+name: Lint
+
+on: [pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: pip install flake8 lintly
+    - name: Lint with flake8
+      run: flake8 | lintly --commit-sha=${{ github.event.pull_request.head.sha }}
+      env:
+        LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ### Travis CI example
 
 To use with Lintly with Travis CI, add the following to your `.travis.yml` config file:

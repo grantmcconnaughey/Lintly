@@ -2,6 +2,7 @@
 
 ## 0.5.0 (Not released)
 
+* Add support for GitHub Checks when called from GitHub Actions.
 * Add support for posting PR reviews that approve or request changes.
 * Update PR review comment to link to Lintly repo.
 * Update license year.
