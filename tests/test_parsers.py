@@ -111,6 +111,13 @@ class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
         ]
     }
 
+    def test_pylint_no_errors(self):
+        violations = self.parser.parse_violations('')
+        self.assertEqual(violations, dict())
+
+        violations = self.parser.parse_violations('No config file found, using default configuration\n')
+        self.assertEqual(violations, dict())
+
 
 class ESLintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['eslint']

@@ -95,6 +95,10 @@ class PylintJSONParser(BaseLintParser):
         if output and output.startswith('No config'):
             output = '\n'.join(output.splitlines()[1:])
 
+        output = output.strip()
+        if not output:
+            return dict()
+
         json_data = json.loads(output)
 
         violations = collections.defaultdict(list)
