@@ -1,6 +1,6 @@
 # Lintly Changelog
 
-## 0.5.0 (Not released)
+## 0.5.0 (May 5, 2020)
 
 * **Backward Incompatible**: Change the default format from "unix" to "flake8."
   This has no functional difference, as they're the same format. However, it
