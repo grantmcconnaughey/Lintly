@@ -29,7 +29,7 @@ setup(
     license='MIT',
     author='Grant McConnaughey',
     author_email='grantmcconnaughey@gmail.com',
-    description='Slurp up linter output and send it to a GitHub PR review.',
+    description='Automated GitHub PR code reviewer for Python, JavaScript, CSS, and more.',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     packages=find_packages(exclude=['tests']),

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/grantmcconnaughey/Lintly.svg?branch=master)](https://travis-ci.org/grantmcconnaughey/Lintly) [![codecov](https://codecov.io/gh/grantmcconnaughey/lintly/branch/master/graph/badge.svg)](https://codecov.io/gh/grantmcconnaughey/lintly)
 
-A Continuous Integration CLI that slurps up linter output and sends it to a GitHub PR review.
+Automated GitHub PR code reviewer for Python, JavaScript, CSS, and more.
 
 ## Usage
 
@@ -113,8 +113,12 @@ Options:
                                   status to GitHub. Default true
   --request-changes / --no-request-changes
                                   Whether Lintly should post violations as a
-                                  PR request for changes instead of a simple
-                                  comment. Default true
+                                  PR request for changes instead of a comment
+                                  review. Default true
+  --use-checks / --no-use-checks  Whether Lintly should try to use the GitHub
+                                  Checks API to report on changes requested.
+                                  This only works when running in GitHub
+                                  Actions. Default false
   --log                           Send Lintly debug logs to the console.
                                   Default false
   --exit-zero / --no-exit-zero    Whether Lintly should exit with error code

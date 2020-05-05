@@ -46,7 +46,12 @@ logger = logging.getLogger(__name__)
 @click.option('--request-changes/--no-request-changes',
               default=True,
               help=('Whether Lintly should post violations as a PR request for '
-                    'changes instead of a simple comment. Default true'))
+                    'changes instead of a comment review. Default true'))
+@click.option('--use-checks/--no-use-checks',
+              default=False,
+              help=('Whether Lintly should try to use the GitHub Checks API '
+                    'to report on changes requested. This only works when '
+                    'running in GitHub Actions. Default false'))
 @click.option('--log',
               is_flag=True,
               help='Send Lintly debug logs to the console. Default false')

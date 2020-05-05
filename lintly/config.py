@@ -66,3 +66,7 @@ class Config(object):
         https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
         """
         return os.environ.get('GITHUB_RUN_ID')
+
+    @property
+    def use_checks(self):
+        return self.cli_config['use_checks']

@@ -116,18 +116,15 @@ class LintlyBuild(object):
         """
         Maps the expected action to be taken on this PR for the review step
         """
-        action = ACTION_REVIEW_DO_NOTHING
+        action = ACTION_REVIEW_COMMENT
 
-        if self.config.github_check_run_id:
+        if self.config.github_check_run_id and self.config.use_checks:
             action = ACTION_REVIEW_USE_CHECKS
-        else:
+        elif self.config.request_changes:
             # Use PR reviews
             if self.has_violations:
-                if self.config.request_changes:
-                    action = ACTION_REVIEW_REQUEST_CHANGES
-                else:
-                    action = ACTION_REVIEW_COMMENT
-            elif self.config.request_changes:
+                action = ACTION_REVIEW_REQUEST_CHANGES
+            else:
                 action = ACTION_REVIEW_APPROVE
 
         return action

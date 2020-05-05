@@ -6,8 +6,8 @@
   This has no functional difference, as they're the same format. However, it
   will result in a different GitHub commit status context, which could prevent
   you from merging PRs if the unix commit status is required by repo settings.
-* Add support for GitHub Checks when called from GitHub Actions.
-* Add support for posting PR reviews that approve or request changes.
+* Add support for GitHub Checks when called from GitHub Actions with the `--use-checks` flag.
+* Add support for posting PR reviews that approve or request changes with the `--request-changes` flag.
 * Update PR review comments to link to Lintly repo.
 * Update license year.
 
