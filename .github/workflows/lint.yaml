@@ -17,6 +17,6 @@ jobs:
         pip install -r requirements.txt
     - name: Lint with flake8
       run: |
-        flake8 | lintly --log --context=flake8 --commit-sha=${{ github.event.pull_request.head.sha }}
+        flake8 | lintly --log --context=flake8 --commit-sha=${{ github.event.pull_request.head.sha }} --use-checks
       env:
         LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
