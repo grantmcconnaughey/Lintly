@@ -12,4 +12,6 @@ class Project(object):
 
     @property
     def name(self):
+
+
         return self.full_name.split('/')[1]
