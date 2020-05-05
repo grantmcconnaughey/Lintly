@@ -11,6 +11,10 @@
 * Update PR review comments to link to Lintly repo.
 * Update license year.
 
+## 0.4.2 (March 12, 2020)
+
+* Fix issue parsing Pylint output when there are no violations.
+
 ## 0.4.1 (January 12, 2020)
 
 * Add support for Python 3.7 and 3.8
