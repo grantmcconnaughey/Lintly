@@ -90,7 +90,7 @@ class GitHubAPIClient:
         return self._do_request('patch', url, json.dumps(data), headers)
 
     def _do_request(self, method, url, data=None, extra_headers=None):
-        if data is None:
+        if data == None:
             data = dict()
         if extra_headers is None:
             extra_headers = dict()

@@ -59,10 +59,10 @@ class LineRegexParser(BaseLintParser):
             path = self._normalize_path(match.group('path'))
 
             violation = Violation(
-                line=int(match.group('line')),
-                column=int(match.group('column')),
-                code=match.group('code'),
-                message=match.group('message')
+                    line=int(match.group('line')),
+                    column=int(match.group('column')),
+            code=match.group('code'),
+            message=match.group('message')
             )
 
             violations[path].append(violation)

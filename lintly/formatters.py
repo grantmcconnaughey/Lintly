@@ -17,8 +17,6 @@ env = Environment(
 )
 
 
-
-
 def build_pr_comment(config, violations):
     """
     Creates a Markdown representation of the comment to be posted to a pull request.
