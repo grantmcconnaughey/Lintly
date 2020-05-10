@@ -38,7 +38,7 @@ Now you will see a review with linting errors...
     ```
 - [black](https://black.readthedocs.io/en/stable/)
     ```
-    $ black --check | lintly --format=black
+    $ black . --check 2>&1 >/dev/null | lintly --format=black
     ```
 - [pylint](https://www.pylint.org/)
     - For pylint you must use the `json` output format.
