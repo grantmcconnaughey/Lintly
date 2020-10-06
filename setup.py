@@ -8,8 +8,8 @@ from setuptools import find_packages, setup
 dependencies = [
     'ci-py',
     'cached-property<2.0',
-    'click<7.0',
-    'jinja2<3.0',
+    'click<8.0',
+    'Jinja2<3.0',
     'PyGithub<2.0',
     'python-gitlab<2.0',
     'six',
