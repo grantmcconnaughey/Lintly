@@ -34,6 +34,7 @@ GITHUB_API_PR_REVIEW_HEADER = 'application/vnd.github.black-cat-preview+json'
 GITHUB_DIFF_HEADER = 'application/vnd.github.3.diff'
 GITHUB_CHECKS_HEADER = 'application/vnd.github.antiope-preview+json'
 GITHUB_USER_AGENT = 'Lintly'
+GITHUB_PULL_REQUEST_COMMENT_LIMIT = 50
 
 ANNOTATION_LEVEL_WARNING = 'warning'
 ANNOTATION_LEVEL_FAILURE = 'failure'
@@ -195,18 +196,30 @@ class GitHubBackend(BaseGitBackend):
                     })
 
         client = GitHubAPIClient(token=self.token)
-        data = {
-            'body': build_pr_review_body(all_violations),
-            'event': self._get_event(pr_review_action),
-            'comments': comments,
-        }
 
-        url = '/repos/{owner}/{repo_name}/pulls/{pr_number}/reviews'.format(
-            owner=self.project.owner_login,
-            repo_name=self.project.name,
-            pr_number=pr
-        )
-        client.post(url, data, headers={'Accept': GITHUB_API_PR_REVIEW_HEADER})
+        # Pull requests API has a limit of 50 comments per request,
+        # if we have more comments than this we will need to split
+        # the comments into several different requests
+        rate_limited_comments = []
+
+        while comments:
+            rate_limited_comments.append(comments.pop())
+            # If we reached the amount of comments allowed per request or
+            # there are no pending comments to add then we send the request
+            if len(rate_limited_comments) == GITHUB_PULL_REQUEST_COMMENT_LIMIT or not comments:
+                data = {
+                    'body': build_pr_review_body(all_violations),
+                    'event': self._get_event(pr_review_action),
+                    'comments': rate_limited_comments,
+                }
+
+                url = '/repos/{owner}/{repo_name}/pulls/{pr_number}/reviews'.format(
+                    owner=self.project.owner_login,
+                    repo_name=self.project.name,
+                    pr_number=pr
+                )
+                client.post(url, data, headers={'Accept': GITHUB_API_PR_REVIEW_HEADER})
+                rate_limited_comments.clear()
 
     @translate_github_exception
     def delete_pull_request_review_comments(self, pr):
