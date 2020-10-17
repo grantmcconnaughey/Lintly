@@ -81,7 +81,8 @@ At a minimum Lintly needs to know the following information to determine how to 
 - **Pull Request number** (`--pr` or `LINTLY_PR` env var)
     > Note: Most Continuous Integration platforms will provide this value automatically.
 
-These configuration values can be provided to Lintly via environment variables or by being passed in as arguments to the Lintly CLI.
+These configuration values can be provided to Lintly via environment variables, discovered automatically when run in a supported CI platform,
+or by being passed in as arguments to the Lintly CLI.
 
 ### Options
 
@@ -117,8 +118,8 @@ Options:
                                   review. Default true
   --use-checks / --no-use-checks  Whether Lintly should try to use the GitHub
                                   Checks API to report on changes requested.
-                                  This only works when running in GitHub
-                                  Actions. Default false
+                                  This only works when running as a GitHub
+                                  App. Default false
   --log                           Send Lintly debug logs to the console.
                                   Default false
   --exit-zero / --no-exit-zero    Whether Lintly should exit with error code
@@ -148,13 +149,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.8
     - name: Install dependencies
       run: pip install flake8 lintly
     - name: Lint with flake8
-      run: flake8 | lintly --commit-sha=${{ github.event.pull_request.head.sha }}
+      run: flake8 | lintly
       env:
         LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
 ```
