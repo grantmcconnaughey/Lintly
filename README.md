@@ -8,7 +8,7 @@ Automated GitHub PR code reviewer for Python, JavaScript, CSS, and more.
 
 First, `pip` install lintly:
 
-    $ pip install lintly
+    $ pip install lintly==0.6.0
 
 > Lintly requires Python 2.7 or 3.4+.
 
