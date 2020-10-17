@@ -1,9 +1,10 @@
 # Lintly Changelog
 
-## 0.6.0 (Unreleased)
+## 0.6.0 (October 27, 2020)
 
+* Add support for Python 3.9
 * Upgrade `click` version requirements
-* Fixed an issue preventing Lintly from succeeding when there were more than 50 review comments
+* Fixed an issue preventing Lintly from submitting a review when there are 51+ review comments
 
 ## 0.5.0 (May 5, 2020)
 
