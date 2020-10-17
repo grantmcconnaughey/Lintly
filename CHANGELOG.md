@@ -1,5 +1,10 @@
 # Lintly Changelog
 
+## 0.6.0 (Unreleased)
+
+* Upgrade `click` version requirements
+* Fixed an issue preventing Lintly from succeeding when there were more than 50 review comments
+
 ## 0.5.0 (May 5, 2020)
 
 * **Backward Incompatible**: Change the default format from "unix" to "flake8."
