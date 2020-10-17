@@ -200,17 +200,18 @@ class GitHubBackend(BaseGitBackend):
         # Pull requests API has a limit of 50 comments per request,
         # if we have more comments than this we will need to split
         # the comments into several different requests
-        rate_limited_comments = []
+        comments_batch = []
 
         while comments:
-            rate_limited_comments.append(comments.pop())
+            comments_batch.append(comments.pop())
+
             # If we reached the amount of comments allowed per request or
             # there are no pending comments to add then we send the request
-            if len(rate_limited_comments) == GITHUB_PULL_REQUEST_COMMENT_LIMIT or not comments:
+            if len(comments_batch) == GITHUB_PULL_REQUEST_COMMENT_LIMIT or not comments:
                 data = {
                     'body': build_pr_review_body(all_violations),
                     'event': self._get_event(pr_review_action),
-                    'comments': rate_limited_comments,
+                    'comments': comments_batch,
                 }
 
                 url = '/repos/{owner}/{repo_name}/pulls/{pr_number}/reviews'.format(
@@ -219,7 +220,8 @@ class GitHubBackend(BaseGitBackend):
                     pr_number=pr
                 )
                 client.post(url, data, headers={'Accept': GITHUB_API_PR_REVIEW_HEADER})
-                rate_limited_comments.clear()
+
+                comments_batch.clear()
 
     @translate_github_exception
     def delete_pull_request_review_comments(self, pr):
