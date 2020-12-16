@@ -117,6 +117,56 @@ class PylintJSONParser(BaseLintParser):
         return violations
 
 
+
+class BanditJSONParser(BaseLintParser):
+    """
+    Bandit JSON format:
+
+    {
+      "code": "3 \n4 from lxml.html import parse\n5 \n6 from ..common import has_known_unsafe_var, match_line_num_offset\n",
+      "filename": "../sarahc/rules/django_template/pass_context_vars_in_script.py",
+      "issue_confidence": "HIGH",
+      "issue_severity": "LOW",
+      "issue_text": "Using parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace parse with the equivalent defusedxml package.",
+      "line_number": 4,
+      "line_range": [
+        4,
+        5
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b410-import-lxml",
+      "test_id": "B410",
+      "test_name": "blacklist"
+    }
+
+    """
+
+    def parse_violations(self, output):
+        if output and output.startswith('No config'):
+            output = '\n'.join(output.splitlines()[1:])
+
+        output = output.strip()
+        if not output:
+            return dict()
+
+        json_data = json.loads(output["results"])
+
+        violations = collections.defaultdict(list)
+
+        for violation_json in json_data:
+            violation = Violation(
+                line=violation_json['line_number'],
+                column=violation_json['line_number'],
+                code='{} ({})'.format(violation_json['test_id'], violation_json['test_name']),
+                message=violation_json['issue_text']
+            )
+
+            path = self._normalize_path(violation_json['filename'])
+            violations[path].append(violation)
+
+        return violations
+
+
+
 class ESLintParser(BaseLintParser):
 
     def parse_violations(self, output):
@@ -276,6 +326,9 @@ PARSERS = {
     # /Users/grant/project/file1.js
     #     1:1    error  '$' is not defined                              no-undef
     'eslint': ESLintParser(),
+    
+    # Bandit Parser
+    'bandit-json': BanditJSONParser(),
 
     # ESLint's unix formatter
     # lintly/static/js/scripts.js:69:1: 'lintly' is not defined. [Error/no-undef]
