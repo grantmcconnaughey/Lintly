@@ -234,6 +234,77 @@ class CfnLintParser(BaseLintParser):
         return violations
 
 
+class BanditJSONParser(BaseLintParser):
+    """
+    Bandit JSON format:
+
+      [
+          {
+              "errors": [],
+              "generated_at": "2021-01-07T23:39:39Z",
+              "metrics": {
+                  "./lintly/formatters.py": {
+                      "CONFIDENCE.HIGH": 1.0,
+                      "CONFIDENCE.LOW": 0.0,
+                      "CONFIDENCE.MEDIUM": 0.0,
+                      "CONFIDENCE.UNDEFINED": 0.0,
+                      "SEVERITY.HIGH": 1.0,
+                      "SEVERITY.LOW": 0.0,
+                      "SEVERITY.MEDIUM": 0.0,
+                      "SEVERITY.UNDEFINED": 0.0,
+                      "loc": 31,
+                      "nosec": 0
+                      },
+              "results": [
+                  {
+                      "code": "13 \n14 env = Environment(\n15 loader=FileSystemLoader(TEMPLATES_PATH),
+                                  \n16 autoescape=False\n17 )\n",
+                      "filename": "./lintly/formatters.py",
+                      "issue_confidence": "HIGH",
+                      "issue_severity": "HIGH",
+                      "issue_text": "Using jinja2 templates with autoescape=False is dangerous and can lead to XSS."
+                                    "Use autoescape=True or use the select_autoescape function.",
+                      "line_number": 14,
+                      "line_range": [
+                          14,
+                          15,
+                          16
+                          ],
+                     "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b701_jinja2_autoescape_false.html",
+                     "test_id": "B701"
+                     "test_name": "jinja2_autoescape_false"
+                }
+            ]
+         }
+     ]
+
+    """
+
+    def parse_violations(self, output):
+
+        output = output.strip()
+        if not output:
+            return dict()
+
+        json_data = json.loads(output)
+
+        violations = collections.defaultdict(list)
+        for violation_json in json_data["results"]:
+            violation = Violation(
+                line=violation_json["line_number"],
+                column=0,
+                code="{} ({})".format(
+                    violation_json["test_id"], violation_json["test_name"]
+                ),
+                message=violation_json["issue_text"],
+            )
+
+            path = self._normalize_path(violation_json["filename"])
+            violations[path].append(violation)
+
+        return violations
+
+
 class CfnNagParser(BaseLintParser):
 
     def parse_violations(self, output):
@@ -293,6 +364,9 @@ PARSERS = {
 
     # cfn-lint default formatter
     'cfn-lint': CfnLintParser(),
+
+    # Bandit Parser
+    "bandit-json": BanditJSONParser(),
 
     # cfn-nag JSON output
     'cfn-nag': CfnNagParser(),
