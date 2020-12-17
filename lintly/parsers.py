@@ -13,7 +13,8 @@ from .violations import Violation
 class BaseLintParser(object):
 
     def parse_violations(self, output):
-        raise NotImplementedError
+       print(output) 
+       raise NotImplementedError
 
     def _get_working_dir(self):
         return os.getcwd()
@@ -92,9 +93,11 @@ class PylintJSONParser(BaseLintParser):
     def parse_violations(self, output):
         # Sometimes pylint will output "No config file found, using default configuration".
         # This handles that case by removing that line.
-        if output and output.startswith('No config'):
+        while output.startswith('[main]'):
+          if output and output.startswith('[main]'):
             output = '\n'.join(output.splitlines()[1:])
-
+ 
+        pprint(output)
         output = output.strip()
         if not output:
             return dict()
@@ -139,10 +142,12 @@ class BanditJSONParser(BaseLintParser):
     }
 
     """
-
+    print("Debug line before entering code")
     def parse_violations(self, output):
-        if output and output.startswith('No config'):
-            output = '\n'.join(output.splitlines()[1:])
+     
+        while output.statswith(['main']):
+            if output and output.startswith('[main]'):
+                output = '\n'.join(output.splitlines()[1:])
 
         output = output.strip()
         if not output:
