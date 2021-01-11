@@ -11,7 +11,7 @@ dependencies = [
     'click<8.0',
     'Jinja2<3.0',
     'PyGithub<2.0',
-    'python-gitlab<2.0',
+    'python-gitlab<3.0',
     'six',
 ]
 
