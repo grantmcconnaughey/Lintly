@@ -8,12 +8,12 @@ import os
 import re
 
 from .violations import Violation
+from pprint import pprint
 
 
 class BaseLintParser(object):
 
     def parse_violations(self, output):
-       print(output) 
        raise NotImplementedError
 
     def _get_working_dir(self):
@@ -72,6 +72,7 @@ class LineRegexParser(BaseLintParser):
 
 
 class PylintJSONParser(BaseLintParser):
+
     """
     Pylint JSON format:
 
@@ -93,11 +94,10 @@ class PylintJSONParser(BaseLintParser):
     def parse_violations(self, output):
         # Sometimes pylint will output "No config file found, using default configuration".
         # This handles that case by removing that line.
-        while output.startswith('[main]'):
-          if output and output.startswith('[main]'):
+
+        while output and output.startswith('['):
             output = '\n'.join(output.splitlines()[1:])
  
-        pprint(output)
         output = output.strip()
         if not output:
             return dict()
@@ -125,7 +125,7 @@ class BanditJSONParser(BaseLintParser):
     """
     Bandit JSON format:
 
-    {
+    [{
       "code": "3 \n4 from lxml.html import parse\n5 \n6 from ..common import has_known_unsafe_var, match_line_num_offset\n",
       "filename": "../sarahc/rules/django_template/pass_context_vars_in_script.py",
       "issue_confidence": "HIGH",
@@ -139,25 +139,22 @@ class BanditJSONParser(BaseLintParser):
       "more_info": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b410-import-lxml",
       "test_id": "B410",
       "test_name": "blacklist"
-    }
+    }]
 
     """
-    print("Debug line before entering code")
     def parse_violations(self, output):
-     
-        while output.statswith(['main']):
-            if output and output.startswith('[main]'):
-                output = '\n'.join(output.splitlines()[1:])
+
+        """while output and output.startswith('['):
+            output = '\n'.join(output.splitlines()[1:])"""
 
         output = output.strip()
         if not output:
             return dict()
-
-        json_data = json.loads(output["results"])
+ 
+        json_data = json.loads(output)
 
         violations = collections.defaultdict(list)
-
-        for violation_json in json_data:
+        for violation_json in json_data["results"]:
             violation = Violation(
                 line=violation_json['line_number'],
                 column=violation_json['line_number'],
@@ -167,6 +164,7 @@ class BanditJSONParser(BaseLintParser):
 
             path = self._normalize_path(violation_json['filename'])
             violations[path].append(violation)
+            print(violations)
 
         return violations
 

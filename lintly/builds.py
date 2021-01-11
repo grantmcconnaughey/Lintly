@@ -20,6 +20,8 @@ from .projects import Project
 
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 
 
 class LintlyBuild(object):
@@ -59,28 +61,31 @@ class LintlyBuild(object):
     def execute(self):
         """
         Executes a new build on a project.
+
         """
-        if not self.config.pr:
+        """if not self.config.pr:
             raise NotPullRequestException
+        """
 
         logger.debug('Using the following configuration:')
         for name, value in self.config.as_dict().items():
             logger.debug('  - {}={}'.format(name, repr(value)))
 
-        logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
+        #logger.info('Running Lintly against PR #{} for repo {}'.format(self.config.pr, self.project))
 
         parser = PARSERS.get(self.config.format)
+        
         self._all_violations = parser.parse_violations(self.linter_output)
         logger.info('Lintly found violations in {} files'.format(len(self._all_violations)))
 
-        diff = self.get_pr_diff()
-        patch = self.get_pr_patch(diff)
-        self._diff_violations = self.find_diff_violations(patch)
-        logger.info('Lintly found diff violations in {} files'.format(len(self._diff_violations)))
+        #diff = self.get_pr_diff()
+        #patch = self.get_pr_patch(diff)
+        #self._diff_violations = self.find_diff_violations(patch)
+        #logger.info('Lintly found diff violations in {} files'.format(len(self._diff_violations)))
 
-        self.cleanup_previous_comments()
-        self.submit_to_pr(patch)
-        self.post_commit_status()
+        #self.cleanup_previous_comments()
+        #self.submit_to_pr(patch)
+        #self.post_commit_status()
 
     def get_pr_diff(self):
         return self.git_client.get_pr_diff(self.config.pr)
