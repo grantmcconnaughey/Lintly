@@ -95,7 +95,7 @@ class PylintJSONParser(BaseLintParser):
         # Sometimes pylint will output "No config file found, using default configuration".
         # This handles that case by removing that line.
 
-        while output and output.startswith('['):
+        if output and output.startswith('No config'):
             output = '\n'.join(output.splitlines()[1:])
  
         output = output.strip()
@@ -157,7 +157,7 @@ class BanditJSONParser(BaseLintParser):
         for violation_json in json_data["results"]:
             violation = Violation(
                 line=violation_json['line_number'],
-                column=violation_json['line_number'],
+                column=0,
                 code='{} ({})'.format(violation_json['test_id'], violation_json['test_name']),
                 message=violation_json['issue_text']
             )

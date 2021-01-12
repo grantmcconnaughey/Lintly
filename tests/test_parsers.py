@@ -93,6 +93,29 @@ class Flake8ParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     }
 
 
+class BanditParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['bandit-json']
+    linter_output_file_name = 'bandit-json.txt'
+    expected_violations = {
+        'build/lib/lintly/formatters.py':[
+            {'line':14, 'column':0, 'code':'B701 (jinja2_autoescape_false)', 'message':'Using jinja2 templates with autoescape=False is dangerous and can lead to XSS. Use autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.'}
+        ],
+        'lintly/formatters.py':[
+            {'line':14, 'column':0, 'code':'B701 (jinja2_autoescape_false)', 'message':'Using jinja2 templates with autoescape=False is dangerous and can lead to XSS. Use autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.'}
+        ],
+        'tests/test_builds.py':[
+            {'line':48, 'column':0, 'code':'B101 (assert_used)', 'message':'Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.'}
+        ],
+        'tests/test_cli.py':[
+            {'line':13, 'column':0, 'code':'B101 (assert_used)', 'message':'Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.'}, 
+            {'line':14, 'column':0, 'code':'B101 (assert_used)', 'message':'Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.'}, 
+            {'line':15, 'column':0, 'code':'B101 (assert_used)', 'message':'Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.'}
+        ]
+    }
+
+
+
+
 class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'
