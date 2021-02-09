@@ -53,6 +53,10 @@ Now you will see a review with linting errors...
     ```
     $ stylelint . | lintly --format=stylelint
     ```
+- [bandit](https://github.com/PyCQA/bandit)
+    ```
+    $ bandit -r . --format=json | lintly --format=bandit-json
+    ```
 
 - [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
     ```
