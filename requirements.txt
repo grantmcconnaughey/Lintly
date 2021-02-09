@@ -8,5 +8,5 @@ coverage
 flake8
 mock
 pytest
-python-gitlab<2.0
+python-gitlab<3.0
 tox
