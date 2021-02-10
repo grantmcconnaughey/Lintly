@@ -23,12 +23,12 @@ def read(*parts):
 
 
 setup(
-    name='lintly',
-    version='0.6.0',
-    url='https://github.com/grantmcconnaughey/lintly',
+    name='ttam-lintly',
+    version='0.6.1',
+    url='https://github.com/23andMe/Lintly',
     license='MIT',
-    author='Grant McConnaughey',
-    author_email='grantmcconnaughey@gmail.com',
+    author='Veda Nandusekar',
+    author_email='security@23andme.com',
     description='Automated GitHub PR code reviewer for Python, JavaScript, CSS, and more.',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
