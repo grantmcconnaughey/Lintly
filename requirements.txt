@@ -2,11 +2,11 @@ Jinja2<3.0
 PyGithub<2.0
 cached-property<2.0
 ci-py
-click<7.0
+click<8.0
 codecov
 coverage
 flake8
 mock
 pytest
-python-gitlab<2.0
+python-gitlab<3.0
 tox
