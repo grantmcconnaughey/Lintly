@@ -325,7 +325,8 @@ class CfnNagParser(BaseLintParser):
 
                     file_violations.append(violation)
 
-            violations[file["filename"]] = file_violations
+            path = self._normalize_path(file["filename"])
+            violations[path] = file_violations
 
         return violations
 
