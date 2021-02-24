@@ -126,6 +126,21 @@ class BanditJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     }
 
 
+class GitleaksParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['gitleaks']
+    linter_output_file_name = 'gitleaks.json'
+    expected_violations = {
+        'tests/server_test.py': [
+            {'line': 5, 'column': 0, 'code': 'AKIAIO5FODNN7EXAMPLE',
+             'message': 'AWS Access Key'}
+        ],
+        'tests/linters_output/gitleaks.json': [
+            {'line': 2, 'column': 0, 'code': '-----BEGIN PRIVATE KEY-----',
+             'message': 'Asymmetric Private Key'}
+        ]
+    }
+
+
 class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'
