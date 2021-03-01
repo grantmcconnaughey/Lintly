@@ -331,6 +331,50 @@ class CfnNagParser(BaseLintParser):
         return violations
 
 
+class GitLeaksParser(BaseLintParser):
+    """
+    Gitleaks JSON format
+
+        {
+            "line": "-----BEGIN PRIVATE KEY-----",
+            "lineNumber": 59,
+            "offender": "-----BEGIN PRIVATE KEY-----",
+            "commit": "111111111111111111111000000000",
+            "repo": ".",
+            "repoURL": "",
+            "leakURL": "",
+            "rule": "Asymmetric Private Key",
+            "commitMessage": "any commit message \n",
+            "author": "bob s",
+            "email": "bob@example.com",
+            "file": "relative/path/to/output",
+            "date": "2020-04-14T15:17:53-07:00",
+            "tags": "key, AsymmetricPrivateKey"
+        }
+
+    """
+
+    def parse_violations(self, output):
+        if not output:
+            return dict()
+
+        json_data = output.split("\n")
+        violations = collections.defaultdict(list)
+        for violation_json in json_data:
+            violation_data = json.loads(violation_json)
+            violation = Violation(
+                line=violation_data["lineNumber"],
+                column=0,
+                code=violation_data["offender"],
+                message=violation_data["rule"]
+            )
+
+            path = self._normalize_path(violation_data['file'])
+            violations[path].append(violation)
+
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -371,4 +415,7 @@ PARSERS = {
 
     # cfn-nag JSON output
     'cfn-nag': CfnNagParser(),
+
+    # gitleaks JSON Parser
+    "gitleaks": GitLeaksParser(),
 }
