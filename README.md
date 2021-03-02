@@ -57,6 +57,10 @@ Now you will see a review with linting errors...
     ```
     $ bandit -r . --format=json | lintly --format=bandit-json
     ```
+- [gitleaks](https://github.com/zricethezav/gitleaks)
+    ```
+    $ gitleaks --path=. -q | lintly --format=gitleaks
+    ```
 
 - [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
     ```
