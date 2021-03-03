@@ -358,10 +358,10 @@ class GitLeaksParser(BaseLintParser):
         if not output:
             return dict()
 
-        json_data = output.split("\n")
+        json_data = json.loads(output)
+
         violations = collections.defaultdict(list)
-        for violation_json in json_data:
-            violation_data = json.loads(violation_json)
+        for violation_data in json_data:
             violation = Violation(
                 line=violation_data["lineNumber"],
                 column=0,
