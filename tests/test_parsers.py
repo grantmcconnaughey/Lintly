@@ -130,11 +130,11 @@ class GitleaksParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['gitleaks']
     linter_output_file_name = 'gitleaks.json'
     expected_violations = {
-        'tests/server_test.py': [
+        'relative/path/to/output': [
             {'line': 5, 'column': 0, 'code': 'AKIAIO5FODNN7EXAMPLE',
              'message': 'AWS Access Key'}
         ],
-        'tests/linters_output/gitleaks.json': [
+        'relative/path/to/output2': [
             {'line': 2, 'column': 0, 'code': '-----BEGIN PRIVATE KEY-----',
              'message': 'Asymmetric Private Key'}
         ]
