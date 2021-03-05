@@ -141,6 +141,21 @@ class GitleaksParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     }
 
 
+class HadolintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['hadolint']
+    linter_output_file_name = 'hadolint.json'
+    expected_violations = {
+        'relative/path/to/file1': [
+            {'line': 12, 'column': 1, 'code': 'DL3015',
+             'message': 'Avoid additional packages by specifying `--no-install-recommends`'}
+        ],
+        'relative/path/to/file2': [
+            {'line': 19, 'column': 1, 'code': 'DL3020',
+             'message': 'Use COPY instead of ADD for files and folders'}
+        ]
+    }
+
+
 class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'

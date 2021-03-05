@@ -375,6 +375,43 @@ class GitLeaksParser(BaseLintParser):
         return violations
 
 
+class HadolintParser(BaseLintParser):
+    """
+    Hadolint JSON format
+
+       {
+            "line": 20,
+            "code": "DL3020",
+            "message": "Use COPY instead of ADD for files and folders",
+            "column": 1,
+            "file": "cfn-nag-lintly-action/Dockerfile",
+            "level": "error"
+        }
+
+    """
+
+    def parse_violations(self, output):
+        if not output:
+            return dict()
+
+        json_data = json.loads(output)
+
+        violations = collections.defaultdict(list)
+
+        for violation_json in json_data:
+            violation = Violation(
+                line=violation_json['line'],
+                column=violation_json['column'],
+                code=violation_json["code"],
+                message=violation_json['message']
+            )
+
+            path = self._normalize_path(violation_json['file'])
+            violations[path].append(violation)
+
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -418,4 +455,7 @@ PARSERS = {
 
     # gitleaks JSON Parser
     "gitleaks": GitLeaksParser(),
+
+    # hadolint JSON output
+    "hadolint": HadolintParser(),
 }

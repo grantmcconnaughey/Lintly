@@ -61,6 +61,10 @@ Now you will see a review with linting errors...
     ```
     $ gitleaks --path=. -q | lintly --format=gitleaks
     ```
+- - [hadolint](https://github.com/hadolint/hadolint)
+    ```
+    $ hadolint path/to/Dockerfile --format json |lintly --format=hadolint
+    ```
 
 - [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
     ```
