@@ -1,0 +1,18 @@
+[
+    {
+      "line": 12,
+      "code": "DL3015",
+      "message": "Avoid additional packages by specifying `--no-install-recommends`",
+      "column": 1,
+      "file": "relative/path/to/file1",
+      "level": "info"
+    },
+    {
+      "line": 19,
+      "code": "DL3020",
+      "message": "Use COPY instead of ADD for files and folders",
+      "column": 1,
+      "file": "relative/path/to/file2",
+      "level": "error"
+    }
+  ]
