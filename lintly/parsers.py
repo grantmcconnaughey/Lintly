@@ -412,6 +412,64 @@ class HadolintParser(BaseLintParser):
         return violations
 
 
+class TerrascanParser(BaseLintParser):
+    """
+    Terrascan JSON format
+    {
+        "results": {
+            "violations": [
+                {
+                     "rule_name": "apiGatewayName",
+                     "description": "Enable AWS CloudWatch Logs for APIs",
+                     "rule_id": "AWS.API Gateway.Logging.Medium.0567",
+                     "severity": "MEDIUM",
+                     "category": "Logging",
+                     "resource_name": "this",
+                     "resource_type": "aws_api_gateway_stage",
+                     "file": "api_gateway_config.tf",
+                     "line": 15
+                }
+            ],
+            "skipped_violations": null,
+            "scan_summary": {
+                "file/folder": "/path/to/the/file/location",
+                "iac_type": "terraform",
+                "scanned_at": "2021-03-17 18:46:52.24701 +0000 UTC",
+                "policies_validated": 562,
+                "violated_policies": 7,
+                "low": 4,
+                "medium": 1,
+                "high": 2
+            }
+        }
+    }
+
+    """
+
+    def parse_violations(self, output):
+        if not output:
+            return dict()
+
+        json_data = json.loads(output)
+
+        violations = collections.defaultdict(list)
+
+        for violation_json in json_data["results"]["violations"]:
+            violation = Violation(
+                line=violation_json['line'],
+                column=0,
+                code="{} ({})".format(
+                    violation_json["rule_id"], violation_json["rule_name"]
+                ),
+                message=violation_json["description"],
+            )
+
+            path = self._normalize_path(violation_json["file"])
+            violations[path].append(violation)
+
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -458,4 +516,7 @@ PARSERS = {
 
     # hadolint JSON output
     "hadolint": HadolintParser(),
+
+    # terrascan JSON output
+    "terrascan": TerrascanParser(),
 }

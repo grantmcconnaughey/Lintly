@@ -61,9 +61,13 @@ Now you will see a review with linting errors...
     ```
     $ gitleaks --path=. -q | lintly --format=gitleaks
     ```
-- - [hadolint](https://github.com/hadolint/hadolint)
+-  [hadolint](https://github.com/hadolint/hadolint)
     ```
     $ hadolint path/to/Dockerfile --format json |lintly --format=hadolint
+    ```
+-  [terrascan](https://github.com/accurics/terrascan)
+    ```
+    $ terrascan scan -d path/to/terraform/file -o json |lintly --format=terrascan
     ```
 
 - [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
@@ -114,7 +118,7 @@ Options:
                                   (required)
   --commit-sha TEXT               The commit Lintly is running against
                                   (required)
-  --format [unix|flake8|pylint-json|eslint|eslint-unix|stylelint|black|cfn-lint|cfn-nag]
+  --format [unix|flake8|pylint-json|eslint|eslint-unix|stylelint|black|cfn-lint|cfn-nag|bandit-json|gitleaks|hadolint|terrascan]
                                   The linting output format Lintly should
                                   expect to receive. Default "flake8"
   --context TEXT                  Override the commit status context

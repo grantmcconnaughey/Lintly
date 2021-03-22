@@ -24,7 +24,7 @@ def read(*parts):
 
 setup(
     name='ttam-lintly',
-    version='0.6.4',
+    version='0.6.5',
     url='https://github.com/23andMe/Lintly',
     license='MIT',
     author='Veda Nandusekar',

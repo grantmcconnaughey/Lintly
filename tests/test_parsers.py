@@ -156,6 +156,21 @@ class HadolintParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     }
 
 
+class TerrascanParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['terrascan']
+    linter_output_file_name = 'terrascan.json'
+    expected_violations = {
+        'main.tf': [
+            {'line': 6, 'column': 0, 'code': 'AWS LambdaFunction (lambdaNotEncryptedWithKms)',
+             'message': 'Lambda does not use KMS CMK key to protect environment variables.'}
+        ],
+        'api_gateway_config.tf': [
+            {'line': 15, 'column': 0, 'code': 'AWS.API Gateway.Logging.Medium.0567 (apiGatewayName)',
+             'message': 'Enable AWS CloudWatch Logs for APIs'}
+        ]
+    }
+
+
 class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'

@@ -1,0 +1,39 @@
+{
+  "results": {
+    "violations": [
+      {
+        "rule_name": "lambdaNotEncryptedWithKms",
+        "description": "Lambda does not use KMS CMK key to protect environment variables.",
+        "rule_id": "AWS LambdaFunction",
+        "severity": "High",
+        "category": "Encryption and Key Management",
+        "resource_name": "local_zipfile",
+        "resource_type": "aws_lambda_function",
+        "file": "main.tf",
+        "line": 6
+      },
+      {
+        "rule_name": "apiGatewayName",
+        "description": "Enable AWS CloudWatch Logs for APIs",
+        "rule_id": "AWS.API Gateway.Logging.Medium.0567",
+        "severity": "MEDIUM",
+        "category": "Logging",
+        "resource_name": "this",
+        "resource_type": "aws_api_gateway_stage",
+        "file": "api_gateway_config.tf",
+        "line": 15
+      }
+    ],
+    "skipped_violations": null,
+    "scan_summary": {
+      "file/folder": "/path/to/the/file/location",
+      "iac_type": "terraform",
+      "scanned_at": "2021-03-17 18:46:52.24701 +0000 UTC",
+      "policies_validated": 562,
+      "violated_policies": 7,
+      "low": 4,
+      "medium": 1,
+      "high": 2
+    }
+  }
+}
