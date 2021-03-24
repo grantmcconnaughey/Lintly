@@ -1,4 +1,5 @@
-### [Lintly](https://github.com/grantmcconnaughey/Lintly)
+### [ttam-lintly](https://github.com/23andMe/Lintly)
+#### {{ context }}
 
 {% if len(violations) %}
 The following code quality issues were introduced:

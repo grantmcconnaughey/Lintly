@@ -192,7 +192,7 @@ class GitHubBackend(BaseGitBackend):
                     comments.append({
                         'path': file_path,
                         'position': patch_position,
-                        'body': build_pr_review_line_comment(violation)
+                        'body': build_pr_review_line_comment(self.context, violation)
                     })
 
         client = GitHubAPIClient(token=self.token)
@@ -209,7 +209,7 @@ class GitHubBackend(BaseGitBackend):
             # there are no pending comments to add then we send the request
             if len(comments_batch) == GITHUB_PULL_REQUEST_COMMENT_LIMIT or not comments:
                 data = {
-                    'body': build_pr_review_body(all_violations),
+                    'body': build_pr_review_body(self.context, all_violations),
                     'event': self._get_event(pr_review_action),
                     'comments': comments_batch,
                 }
