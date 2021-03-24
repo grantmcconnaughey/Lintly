@@ -30,8 +30,10 @@ class LintlyBuild(object):
 
         self.project = Project(config.repo)
 
-        context = config.context or "Lintly/{0}".format(config.format)
-        self.git_client = GitHubBackend(token=config.api_key, project=self.project, context=context)
+        self.context = config.context or "Lintly/{0}".format(config.format)
+        self.git_client = GitHubBackend(
+            token=config.api_key, project=self.project, context=self.context
+        )
 
         # All violations found from the linting output
         self._all_violations = {}
@@ -178,7 +180,7 @@ class LintlyBuild(object):
 
         if post_pr_comment and pr_review_action in (ACTION_REVIEW_COMMENT, ACTION_REVIEW_REQUEST_CHANGES):
             logger.info('Creating PR comment')
-            comment = build_pr_comment(self.config, self.violations)
+            comment = build_pr_comment(self.context, self.violations)
             self.git_client.create_pull_request_comment(self.config.pr, comment)
 
     def get_result_description(self):

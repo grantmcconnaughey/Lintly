@@ -1,6 +1,8 @@
+#### {{ context }}
+
 {% if violations|length %}
 
-[Lintly](https://github.com/grantmcconnaughey/Lintly) has detected code quality issues in this pull request.
+[ttam-lintly](https://github.com/23andMe/Lintly) has detected code quality issues in this pull request.
 
 {% else %}
 
