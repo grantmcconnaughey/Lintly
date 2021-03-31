@@ -171,6 +171,21 @@ class TerrascanParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     }
 
 
+class TrivyParserTestCase(ParserTestCaseMixin, unittest.TestCase):
+    parser = PARSERS['trivy']
+    linter_output_file_name = 'trivy.json'
+    expected_violations = {
+        'relative/path/to/file1': [
+            {'line': 0, 'column': 0, 'code': 'RUSTSEC-2019-0001 (Uncontrolled recursion in HTML serialization)',
+             'message': 'Affected versions of this crate did use recursion for serialization of HTML\nDOM trees.'}
+        ],
+        'relative/path/to/file2': [
+            {'line': 0, 'column': 0, 'code': 'CVE-2019-19844 (Django: crafted email address allows account takeover)',
+             'message': 'Django before 1.11.27, 2.x before 2.2.9, and 3.x before 3.0.1 allows account takeover.'}
+        ]
+    }
+
+
 class PylintJSONParserTestCase(ParserTestCaseMixin, unittest.TestCase):
     parser = PARSERS['pylint-json']
     linter_output_file_name = 'pylint-json.txt'
