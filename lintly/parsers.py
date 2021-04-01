@@ -470,6 +470,62 @@ class TerrascanParser(BaseLintParser):
         return violations
 
 
+class TrivyParser(BaseLintParser):
+    """
+    Trivy JSON format
+    {
+        "results": {
+            {
+                "Target": "Cargo.lock",
+                "Type": "cargo",
+                "Vulnerabilities": [
+                    {
+                        "VulnerabilityID": "RUSTSEC-2019-0001",
+                        "PkgName": "ammonia",
+                        "InstalledVersion": "1.9.0",
+                        "FixedVersion": "\u003e= 2.1.0",
+                        "Layer": {
+                            "DiffID": "sha256:9d79b7f65e624be5aa0858c78c99cf169f68e2c7db49a5e610cdb5d56f18bf9c"
+                            },
+                        "PrimaryURL": "https://rustsec.org/advisories/RUSTSEC-2019-0001",
+                        "Title": "Uncontrolled recursion leads HTML serialization",
+                        "Description": "Affected versions crate use recursion for serialization of HTML\nDOM.",
+                        "Severity": "UNKNOWN",
+                        "References": [
+                                "https://github.com/rust-ammonia/ammonia/blob/master/CHANGELOG.md#210"
+                                ]
+                    }
+                ]
+            }
+    }
+
+    """
+
+    def parse_violations(self, output):
+        if not output:
+            return dict()
+
+        json_data = json.loads(output)
+
+        violations = collections.defaultdict(list)
+
+        for data in json_data:
+            for violation_json in data["Vulnerabilities"]:
+                violation = Violation(
+                    line=0,
+                    column=0,
+                    code="{} ({})".format(
+                        violation_json["VulnerabilityID"], violation_json["Title"]
+                    ),
+                    message=violation_json["Description"],
+                )
+
+                path = self._normalize_path(data["Target"])
+                violations[path].append(violation)
+
+        return violations
+
+
 DEFAULT_PARSER = LineRegexParser(r'^(?P<path>.*):(?P<line>\d+):(?P<column>\d+): (?P<code>\w\d+) (?P<message>.*)$')
 
 
@@ -519,4 +575,7 @@ PARSERS = {
 
     # terrascan JSON output
     "terrascan": TerrascanParser(),
+
+    # trivy JSON output
+    "trivy": TrivyParser(),
 }

@@ -70,6 +70,11 @@ Now you will see a review with linting errors...
     $ terrascan scan -d path/to/terraform/file -o json |lintly --format=terrascan
     ```
 
+-  [trivy](https://github.com/aquasecurity/trivy)
+    ```
+    $ trivy --quiet fs -f json path/to/directory/ |lintly --format=trivy
+    ```
+
 - [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint)
     ```
     $ cfn-lint template.yaml | lintly --format=cfn-lint
@@ -118,7 +123,7 @@ Options:
                                   (required)
   --commit-sha TEXT               The commit Lintly is running against
                                   (required)
-  --format [unix|flake8|pylint-json|eslint|eslint-unix|stylelint|black|cfn-lint|cfn-nag|bandit-json|gitleaks|hadolint|terrascan]
+  --format [unix|flake8|pylint-json|eslint|eslint-unix|stylelint|black|cfn-lint|cfn-nag|bandit-json|gitleaks|hadolint|terrascan|trivy]
                                   The linting output format Lintly should
                                   expect to receive. Default "flake8"
   --context TEXT                  Override the commit status context
