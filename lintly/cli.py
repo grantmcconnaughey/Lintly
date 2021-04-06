@@ -54,6 +54,7 @@ logger = logging.getLogger(__name__)
                     'running in GitHub Actions. Default false'))
 @click.option('--log',
               envvar='LINTLY_DEBUG',
+              is_flag=True,
               help='Send Lintly debug logs to the console. Default false')
 @click.option('--exit-zero/--no-exit-zero', default=False,
               help=('Whether Lintly should exit with error code indicating '
