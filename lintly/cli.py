@@ -53,7 +53,7 @@ logger = logging.getLogger(__name__)
                     'to report on changes requested. This only works when '
                     'running in GitHub Actions. Default false'))
 @click.option('--log',
-              is_flag=True,
+              envvar='LINTLY_DEBUG',
               help='Send Lintly debug logs to the console. Default false')
 @click.option('--exit-zero/--no-exit-zero', default=False,
               help=('Whether Lintly should exit with error code indicating '
