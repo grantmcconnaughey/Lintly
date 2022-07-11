@@ -60,6 +60,10 @@ class Config(object):
         return self.cli_config['request_changes']
 
     @property
+    def review_body(self):
+        return self.cli_config['review_body']
+
+    @property
     def github_check_run_id(self):
         """The Check Run ID from GitHub Actions.
 

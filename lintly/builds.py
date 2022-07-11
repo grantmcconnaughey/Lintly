@@ -164,7 +164,8 @@ class LintlyBuild(object):
                 self.config.pr,
                 patch,
                 self._diff_violations,
-                pr_review_action
+                pr_review_action,
+                self.config.review_body
             )
             post_pr_comment = False
         except GitClientError as e:

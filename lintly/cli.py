@@ -55,6 +55,10 @@ logger = logging.getLogger(__name__)
 @click.option('--log',
               is_flag=True,
               help='Send Lintly debug logs to the console. Default false')
+@click.option('--review-body/--no-review-body',
+              default=True,
+              help=('Whether Lintly should post a PR review with a body. '
+                    'The body is not removed after a re-run.'))
 @click.option('--exit-zero/--no-exit-zero', default=False,
               help=('Whether Lintly should exit with error code indicating '
                     'amount of violations or not. Default false'))
