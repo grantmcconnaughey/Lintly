@@ -131,7 +131,7 @@ class GitLabBackend(BaseGitBackend):
         mr.notes.create({'body': comment})
 
     @translate_gitlab_exception
-    def delete_pull_request_comments(self, pr):
+    def delete_pull_request_comments(self, pr, comment_tag):
         project = self.client.projects.get(self.project.full_name)
         mr = project.mergerequests.list(iid=pr)[0]
         client = GitLabAPIClient(self.token, self.user, self.project)

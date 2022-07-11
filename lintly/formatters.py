@@ -23,7 +23,7 @@ def build_pr_comment(config, violations):
     :return: The comment
     """
     template = env.get_template('pr_comment.txt')
-    return template.render(violations=violations, LINTLY_IDENTIFIER=LINTLY_IDENTIFIER)
+    return template.render(violations=violations, LINTLY_IDENTIFIER=(LINTLY_IDENTIFIER + config.comment_tag))
 
 
 def build_pr_review_line_comment(violation):

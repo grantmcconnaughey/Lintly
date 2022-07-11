@@ -93,7 +93,7 @@ class LintlyBuild(object):
         self.git_client.delete_pull_request_review_comments(self.config.pr)
 
         logger.info('Deleting old PR comment')
-        self.git_client.delete_pull_request_comments(self.config.pr)
+        self.git_client.delete_pull_request_comments(self.config.pr, self.config.comment_tag)
 
     def find_diff_violations(self, patch):
         """

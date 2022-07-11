@@ -14,7 +14,7 @@ class DummyGitBackend(BaseGitBackend):
     def create_pull_request_comment(self, pr, comment):
         pass
 
-    def delete_pull_request_comments(self, pr):
+    def delete_pull_request_comments(self, pr, comment_tag):
         pass
 
     def create_pull_request_review(self, pr, patch, all_violations, pr_review_action):

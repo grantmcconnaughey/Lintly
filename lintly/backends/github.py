@@ -123,8 +123,8 @@ class GitHubBackend(BaseGitBackend):
         self.client = Github(token, user_agent=GITHUB_USER_AGENT, per_page=DEFAULT_PER_PAGE)
         self.context = context
 
-    def _should_delete_comment(self, comment):
-        return LINTLY_IDENTIFIER in comment.body
+    def _should_delete_comment(self, comment, comment_tag=''):
+        return (LINTLY_IDENTIFIER + comment_tag) in comment.body
 
     @translate_github_exception
     def get_pull_request(self, pr):
@@ -152,11 +152,11 @@ class GitHubBackend(BaseGitBackend):
         )
 
     @translate_github_exception
-    def delete_pull_request_comments(self, pr):
+    def delete_pull_request_comments(self, pr, comment_tag):
         repo = self.client.get_repo(self.project.full_name)
         pull_request = repo.get_issue(int(pr))
         for comment in pull_request.get_comments():
-            if self._should_delete_comment(comment):
+            if self._should_delete_comment(comment, comment_tag):
                 comment.delete()
 
     def get_pr_diff(self, pr):
